@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QR Code Generator - Mindanao State University - Sultan Naga Dimaporo ROTC Attendance System</title>
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Russo+One&family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --army-green: #4B5320;
+            --army-dark-green: #2E3A1F;
+            --army-light-green: #6B7E3A;
+            --army-tan: #C2B280;
+            --army-brown: #8B4513;
+            --army-gold: #FFD700;
+            --military-gray: #4A4A4A;
+        }
+        
+        body {
+            font-family: 'Roboto', sans-serif;
+            background: linear-gradient(135deg, #f5f5f5 0%, #e8e8e8 100%);
+            min-height: 100vh;
+        }
+        
+        .military-header {
+            background: linear-gradient(135deg, var(--army-green) 0%, var(--army-dark-green) 100%);
+            color: white;
+            padding: 1rem 0;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+            border-bottom: 3px solid var(--army-gold);
+        }
+        
+        .military-title {
+            font-family: 'Russo One', sans-serif;
+            font-size: 2rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+        }
+        
+        .military-card {
+            background: white;
+            border: none;
+            border-radius: 16px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+            transition: all 0.3s ease;
+            overflow: hidden;
+        }
+        
+        .military-card:hover {
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+            transform: translateY(-4px);
+        }
+        
+        .military-card .card-header {
+            background: linear-gradient(135deg, var(--army-green) 0%, var(--army-dark-green) 100%);
+            color: white;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            border: none;
+            padding: 1.25rem 1.5rem;
+            border-radius: 16px 16px 0 0;
+        }
+        
+        .military-btn {
+            background: linear-gradient(135deg, var(--army-green) 0%, var(--army-dark-green) 100%);
+            color: white;
+            border: none;
+            border-radius: 0;
+            padding: 0.75rem 2rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: all 0.3s ease;
+        }
+        
+        .military-btn:hover {
+            background: linear-gradient(135deg, var(--army-light-green) 0%, var(--army-green) 100%);
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+        }
+        
+        .military-form-control {
+            border: 2px solid #e0e0e0;
+            border-radius: 0;
+            transition: all 0.3s ease;
+        }
+        
+        .military-form-control:focus {
+            border-color: var(--army-green);
+            box-shadow: 0 0 0 0.2rem rgba(75, 83, 32, 0.25);
+        }
+    </style>
+</head>
+<body>
+    <!-- Military Header -->
+    <header class="military-header">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-md-8">
+                    <h1 class="military-title">
+                        <i class="fas fa-shield-alt"></i> Mindanao State University - Sultan Naga Dimaporo ROTC
+                    </h1>
+                    <p class="military-subtitle">Training Staff Attendance Management System</p>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main>
+        <div class="container mt-4">
+            <div class="row">
+                <div class="col-md-8">
+                    <div class="military-card">
+                        <div class="card-header">
+                            <h5 class="mb-0">
+                                <i class="fas fa-qrcode"></i> QR Code Generator
+                            </h5>
+                        </div>
+                        <div class="card-body">
+                            <form id="qrGeneratorForm">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label for="session" class="form-label">
+                                                <i class="fas fa-calendar-alt"></i> Training Session
+                                            </label>
+                                            <select class="form-select military-form-control" id="session" name="session_id" required>
+                                                <option value="">Select a session...</option>
+                                                <!-- Sessions will be populated via JavaScript -->
+                                            </select>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label for="template" class="form-label">
+                                                <i class="fas fa-palette"></i> QR Code Template
+                                            </label>
+                                            <select class="form-select military-form-control" id="template" name="template_id">
+                                                <option value="">Default Template</option>
+                                                <!-- Templates will be populated via JavaScript -->
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label for="expiresMinutes" class="form-label">
+                                                <i class="fas fa-clock"></i> Expires After (minutes)
+                                            </label>
+                                            <input type="number" class="form-control military-form-control" id="expiresMinutes" 
+                                                   name="expires_minutes" value="60" min="5" max="480">
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label for="maxScans" class="form-label">
+                                                <i class="fas fa-users"></i> Maximum Scans
+                                            </label>
+                                            <input type="number" class="form-control military-form-control" id="maxScans" 
+                                                   name="max_scans" value="100" min="1" max="500">
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="text-center">
+                                    <button type="submit" class="military-btn">
+                                        <i class="fas fa-magic"></i> Generate QR Code
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-md-4">
+                    <div class="military-card">
+                        <div class="card-header">
+                            <h5 class="mb-0">
+                                <i class="fas fa-info-circle"></i> Instructions
+                            </h5>
+                        </div>
+                        <div class="card-body">
+                            <ol>
+                                <li>Select a training session from the dropdown</li>
+                                <li>Choose a QR code template (optional)</li>
+                                <li>Set expiration time and scan limits</li>
+                                <li>Click "Generate QR Code"</li>
+                                <li>Download or display the QR code for scanning</li>
+                            </ol>
+                            
+                            <div class="alert alert-info mt-3">
+                                <i class="fas fa-lightbulb"></i>
+                                <strong>Tip:</strong> QR codes automatically expire after the set time for security.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- QR Code Display Area -->
+            <div class="row mt-4 hidden" id="qrCodeResult">
+                <div class="col-12">
+                    <div class="military-card">
+                        <div class="card-header">
+                            <h5 class="mb-0">
+                                <i class="fas fa-check-circle text-success"></i> QR Code Generated Successfully
+                            </h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-6 text-center">
+                                    <div id="qrCodeImage"></div>
+                                    <div class="mt-3">
+                                        <button class="btn military-btn btn-sm" onclick="downloadQRCode()" title="Download QR code">
+                                            <i class="fas fa-download"></i> Download
+                                        </button>
+                                        <button class="btn military-btn-secondary btn-sm" onclick="printQRCode()" title="Print QR code">
+                                            <i class="fas fa-print"></i> Print
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <h6>QR Code Details</h6>
+                                    <div id="qrCodeDetails"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Recent QR Codes -->
+            <div class="row mt-4">
+                <div class="col-12">
+                    <div class="military-card">
+                        <div class="card-header">
+                            <h5 class="mb-0">
+                                <i class="fas fa-history"></i> Recent QR Codes
+                            </h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="table-responsive">
+                                <table class="table military-table" id="recentQRCodes">
+                                    <thead>
+                                        <tr>
+                                            <th>Session</th>
+                                            <th>Created</th>
+                                            <th>Expires</th>
+                                            <th>Scans</th>
+                                            <th>Status</th>
+                                            <th>Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <!-- Will be populated via JavaScript -->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="text-center py-4 footer-military">
+        <div class="container">
+            <p>&copy; 2026 Mindanao State University - Sultan Naga Dimaporo ROTC Training Staff Attendance Management System</p>
+            <p>All Rights Reserved</p>
+        </div>
+    </footer>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- jQuery -->
+    <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
+    
+    <script>
+    $(document).ready(function() {
+        // Load sessions and templates
+        loadSessions();
+        loadTemplates();
+        loadRecentQRCodes();
+        
+        $('#qrGeneratorForm').on('submit', function(e) {
+            e.preventDefault();
+            
+            var formData = {
+                session_id: $('#session').val(),
+                template_id: $('#template').val() || null,
+                expires_minutes: $('#expiresMinutes').val(),
+                max_scans: $('#maxScans').val()
+            };
+            
+            var submitBtn = $(this).find('button[type="submit"]');
+            var originalText = submitBtn.html();
+            
+            submitBtn.html('<i class="fas fa-spinner fa-spin"></i> Generating...').prop('disabled', true);
+            
+            $.ajax({
+                url: '/qrcode/api/generate/',
+                method: 'POST',
+                data: formData,
+                success: function(response) {
+                    if (response.success) {
+                        displayQRCode(response);
+                        loadRecentQRCodes();
+                    } else {
+                        alert('Error: ' + response.error);
+                    }
+                },
+                error: function(xhr) {
+                    var errorMsg = 'Failed to generate QR code';
+                    if (xhr.responseJSON && xhr.responseJSON.error) {
+                        errorMsg = xhr.responseJSON.error;
+                    }
+                    alert(errorMsg);
+                },
+                complete: function() {
+                    submitBtn.html(originalText).prop('disabled', false);
+                }
+            });
+        });
+    });
+    
+    function showAlert(type, message) {
+        $('.alert').remove();
+        var alertClass = type === 'error' ? 'alert-danger' : 'alert-success';
+        var alertHtml = '<div class="alert ' + alertClass + ' military-alert alert-dismissible fade show" role="alert">' +
+                       message +
+                       '<button type="button" class="btn-close" data-bs-dismiss="alert"></button>' +
+                       '</div>';
+        $('.container').prepend(alertHtml);
+    }
+    </script>
+</body>
+</html>

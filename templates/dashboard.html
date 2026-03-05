@@ -1,0 +1,728 @@
+{% extends 'base.html' %}
+
+{% block title %}Admin Dashboard - Mindanao State University - Sultan Naga Dimaporo ROTC Attendance System{% endblock %}
+
+{% block extra_css %}
+<style>
+    :root {
+        --primary-color: #4B5320;
+        --secondary-color: #6B8E23;
+        --accent-color: #D4AF37;
+        --danger-color: #dc3545;
+        --success-color: #28a745;
+        --warning-color: #ffc107;
+        --info-color: #17a2b8;
+        --light-bg: #f8f9fa;
+        --dark-bg: #343a40;
+        --sidebar-width: 280px;
+        --header-height: 70px;
+        --border-radius: 12px;
+        --shadow-sm: 0 2px 4px rgba(0,0,0,0.1);
+        --shadow-md: 0 4px 8px rgba(0,0,0,0.15);
+        --shadow-lg: 0 10px 25px rgba(0,0,0,0.2);
+        --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+
+    .admin-sidebar {
+        position: fixed;
+        left: 0;
+        top: 0;
+        width: var(--sidebar-width);
+        height: 100vh;
+        background: linear-gradient(180deg, var(--primary-color) 0%, #2d3a1a 100%);
+        z-index: 1000;
+        transition: var(--transition);
+        box-shadow: var(--shadow-lg);
+    }
+
+    .sidebar-header {
+        padding: 1.5rem;
+        border-bottom: 1px solid rgba(255,255,255,0.1);
+        text-align: center;
+    }
+
+    .sidebar-brand {
+        color: white;
+        font-size: 1.25rem;
+        font-weight: 700;
+        text-decoration: none;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.75rem;
+    }
+
+    .sidebar-brand i {
+        font-size: 2rem;
+        color: var(--accent-color);
+    }
+
+    .sidebar-user {
+        padding: 1.5rem;
+        border-bottom: 1px solid rgba(255,255,255,0.1);
+        text-align: center;
+        color: white;
+    }
+
+    .user-avatar {
+        width: 80px;
+        height: 80px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, var(--accent-color) 0%, #c9a227 100%);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 1rem;
+        font-size: 2rem;
+        color: var(--primary-color);
+        border: 4px solid rgba(255,255,255,0.2);
+    }
+
+    .user-name {
+        font-weight: 600;
+        font-size: 1.1rem;
+        margin-bottom: 0.25rem;
+    }
+
+    .user-role {
+        font-size: 0.875rem;
+        opacity: 0.8;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+    }
+
+    .sidebar-nav {
+        padding: 1rem 0;
+    }
+
+    .nav-section {
+        margin-bottom: 1.5rem;
+    }
+
+    .nav-section-title {
+        padding: 0 1.5rem;
+        font-size: 0.75rem;
+        text-transform: uppercase;
+        letter-spacing: 2px;
+        color: rgba(255,255,255,0.5);
+        margin-bottom: 0.75rem;
+    }
+
+    .nav-item {
+        display: block;
+        padding: 0.875rem 1.5rem;
+        color: rgba(255,255,255,0.8);
+        text-decoration: none;
+        transition: var(--transition);
+        border-left: 4px solid transparent;
+        display: flex;
+        align-items: center;
+        gap: 0.875rem;
+    }
+
+    .nav-item:hover,
+    .nav-item.active {
+        background: rgba(255,255,255,0.1);
+        color: white;
+        border-left-color: var(--accent-color);
+    }
+
+    .nav-item i {
+        font-size: 1.125rem;
+        width: 24px;
+        text-align: center;
+    }
+
+    .sidebar-footer {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        padding: 1rem 1.5rem;
+        border-top: 1px solid rgba(255,255,255,0.1);
+    }
+
+    .logout-btn {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+        width: 100%;
+        padding: 0.75rem;
+        background: rgba(220, 53, 69, 0.2);
+        color: #ff6b6b;
+        border: 1px solid rgba(220, 53, 69, 0.3);
+        border-radius: var(--border-radius);
+        text-decoration: none;
+        transition: var(--transition);
+        font-weight: 500;
+    }
+
+    .logout-btn:hover {
+        background: rgba(220, 53, 69, 0.3);
+        color: #ff8787;
+    }
+
+    .admin-main {
+        margin-left: var(--sidebar-width);
+        min-height: 100vh;
+        transition: var(--transition);
+        background: linear-gradient(135deg, #f5f7fa 0%, #e4e8f0 100%);
+    }
+
+    .admin-header {
+        height: var(--header-height);
+        background: white;
+        box-shadow: var(--shadow-sm);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0 2rem;
+        position: sticky;
+        top: 0;
+        z-index: 100;
+    }
+
+    .header-left {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+    }
+
+    .menu-toggle {
+        display: none;
+        background: none;
+        border: none;
+        font-size: 1.5rem;
+        color: var(--primary-color);
+        cursor: pointer;
+    }
+
+    .page-title {
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: var(--primary-color);
+        margin: 0;
+    }
+
+    .header-right {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+    }
+
+    .header-btn {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        border: none;
+        background: var(--light-bg);
+        color: var(--primary-color);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        transition: var(--transition);
+        position: relative;
+    }
+
+    .header-btn:hover {
+        background: var(--primary-color);
+        color: white;
+    }
+
+    .notification-badge {
+        position: absolute;
+        top: -2px;
+        right: -2px;
+        width: 18px;
+        height: 18px;
+        background: var(--danger-color);
+        color: white;
+        border-radius: 50%;
+        font-size: 0.625rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 600;
+    }
+
+    .admin-content {
+        padding: 2rem;
+    }
+
+    .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 1.5rem;
+        margin-bottom: 2rem;
+    }
+
+    .stat-card {
+        background: white;
+        border-radius: var(--border-radius);
+        padding: 1.5rem;
+        box-shadow: var(--shadow-sm);
+        transition: var(--transition);
+        border: 1px solid rgba(0,0,0,0.05);
+    }
+
+    .stat-card:hover {
+        transform: translateY(-4px);
+        box-shadow: var(--shadow-md);
+    }
+
+    .stat-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 1rem;
+    }
+
+    .stat-icon {
+        width: 50px;
+        height: 50px;
+        border-radius: var(--border-radius);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.5rem;
+    }
+
+    .stat-icon.primary {
+        background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+        color: white;
+    }
+
+    .stat-icon.success {
+        background: linear-gradient(135deg, var(--success-color) 0%, #20c997 100%);
+        color: white;
+    }
+
+    .stat-icon.warning {
+        background: linear-gradient(135deg, var(--warning-color) 0%, #ff9f43 100%);
+        color: white;
+    }
+
+    .stat-icon.info {
+        background: linear-gradient(135deg, var(--info-color) 0%, #15aabf 100%);
+        color: white;
+    }
+
+    .stat-value {
+        font-size: 2rem;
+        font-weight: 700;
+        color: var(--dark-bg);
+        margin-bottom: 0.25rem;
+    }
+
+    .stat-label {
+        color: #6c757d;
+        font-size: 0.875rem;
+    }
+
+    .charts-grid {
+        display: grid;
+        grid-template-columns: 2fr 1fr;
+        gap: 1.5rem;
+        margin-bottom: 2rem;
+    }
+
+    .chart-card {
+        background: white;
+        border-radius: var(--border-radius);
+        padding: 1.5rem;
+        box-shadow: var(--shadow-sm);
+        border: 1px solid rgba(0,0,0,0.05);
+    }
+
+    .chart-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 1.5rem;
+    }
+
+    .chart-title {
+        font-size: 1.125rem;
+        font-weight: 600;
+        color: var(--dark-bg);
+        margin: 0;
+    }
+
+    .chart-actions {
+        display: flex;
+        gap: 0.5rem;
+    }
+
+    .chart-btn {
+        padding: 0.375rem 0.75rem;
+        border: 1px solid #dee2e6;
+        background: white;
+        border-radius: 6px;
+        font-size: 0.875rem;
+        cursor: pointer;
+        transition: var(--transition);
+    }
+
+    .chart-btn:hover,
+    .chart-btn.active {
+        background: var(--primary-color);
+        color: white;
+        border-color: var(--primary-color);
+    }
+
+    .table-card {
+        background: white;
+        border-radius: var(--border-radius);
+        box-shadow: var(--shadow-sm);
+        border: 1px solid rgba(0,0,0,0.05);
+        overflow: hidden;
+    }
+
+    .table-header {
+        padding: 1.25rem 1.5rem;
+        border-bottom: 1px solid #dee2e6;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
+
+    .table-title {
+        font-size: 1.125rem;
+        font-weight: 600;
+        color: var(--dark-bg);
+        margin: 0;
+    }
+
+    .data-table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+    .data-table th,
+    .data-table td {
+        padding: 1rem 1.25rem;
+        text-align: left;
+        border-bottom: 1px solid #dee2e6;
+    }
+
+    .data-table th {
+        background: var(--light-bg);
+        font-weight: 600;
+        color: var(--dark-bg);
+        font-size: 0.875rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    .data-table tbody tr:hover {
+        background: rgba(75, 83, 32, 0.02);
+    }
+
+    .status-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.375rem;
+        padding: 0.375rem 0.75rem;
+        border-radius: 20px;
+        font-size: 0.75rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    .status-badge.active {
+        background: rgba(40, 167, 69, 0.1);
+        color: var(--success-color);
+    }
+
+    .status-badge.pending {
+        background: rgba(255, 193, 7, 0.1);
+        color: #856404;
+    }
+
+    .status-badge.inactive {
+        background: rgba(108, 117, 125, 0.1);
+        color: #6c757d;
+    }
+
+    .quick-actions {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 1rem;
+        margin-bottom: 2rem;
+    }
+
+    .quick-action-btn {
+        display: flex;
+        align-items: center;
+        gap: 0.875rem;
+        padding: 1rem 1.25rem;
+        background: white;
+        border: 2px solid transparent;
+        border-radius: var(--border-radius);
+        box-shadow: var(--shadow-sm);
+        text-decoration: none;
+        color: var(--dark-bg);
+        transition: var(--transition);
+        font-weight: 500;
+    }
+
+    .quick-action-btn:hover {
+        border-color: var(--primary-color);
+        transform: translateY(-2px);
+        box-shadow: var(--shadow-md);
+        color: var(--primary-color);
+    }
+
+    .quick-action-btn i {
+        width: 40px;
+        height: 40px;
+        border-radius: 8px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.125rem;
+    }
+
+    .quick-action-btn.scan i {
+        background: linear-gradient(135deg, var(--success-color) 0%, #20c997 100%);
+        color: white;
+    }
+
+    .quick-action-btn.add i {
+        background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+        color: white;
+    }
+
+    .quick-action-btn.report i {
+        background: linear-gradient(135deg, var(--info-color) 0%, #15aabf 100%);
+        color: white;
+    }
+
+    .quick-action-btn.settings i {
+        background: linear-gradient(135deg, #6c757d 0%, #495057 100%);
+        color: white;
+    }
+
+    @media (max-width: 992px) {
+        .admin-sidebar {
+            transform: translateX(-100%);
+        }
+
+        .admin-sidebar.active {
+            transform: translateX(0);
+        }
+
+        .admin-main {
+            margin-left: 0;
+        }
+
+        .menu-toggle {
+            display: block;
+        }
+
+        .charts-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+
+    @media (max-width: 768px) {
+        .stats-grid {
+            grid-template-columns: repeat(2, 1fr);
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- Sidebar -->
+<aside class="admin-sidebar" id="sidebar">
+    <div class="sidebar-header">
+        <a href="{% url 'authentication:dashboard' %}" class="sidebar-brand">
+            <i class="fas fa-shield-alt"></i>
+            <span>ROTC ADMIN</span>
+        </a>
+                    
+                    <div class="military-card">
+                        <div class="card-header d-flex justify-content-between align-items-center">
+                            <h5 class="mb-0">Training Staff</h5>
+                            <button class="btn military-btn btn-sm">
+                                <i class="fas fa-plus"></i> Add Staff
+                            </button>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-4 mb-3">
+                                    <div class="military-card">
+                                        <div class="card-body text-center">
+                                            <i class="fas fa-user fa-3x text-success mb-2"></i>
+                                            <h6>CPT John Doe</h6>
+                                            <small class="text-muted">Infantry Instructor</small>
+                                            <div class="mt-2">
+                                                <span class="badge bg-success">Active</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-4 mb-3">
+                                    <div class="military-card">
+                                        <div class="card-body text-center">
+                                            <i class="fas fa-user fa-3x text-success mb-2"></i>
+                                            <h6>1LT Jane Smith</h6>
+                                            <small class="text-muted">Drill Instructor</small>
+                                            <div class="mt-2">
+                                                <span class="badge bg-success">Active</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-4 mb-3">
+                                    <div class="military-card">
+                                        <div class="card-body text-center">
+                                            <i class="fas fa-user fa-3x text-warning mb-2"></i>
+                                            <h6>SGT Mike Johnson</h6>
+                                            <small class="text-muted">PT Instructor</small>
+                                            <div class="mt-2">
+                                                <span class="badge bg-warning">On Leave</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Sessions Tab -->
+                <div class="tab-pane fade" id="sessions">
+                    <h2 class="mb-4">Training Sessions</h2>
+                    
+                    <div class="military-card">
+                        <div class="card-header d-flex justify-content-between align-items-center">
+                            <h5 class="mb-0">Upcoming Sessions</h5>
+                            <button class="btn military-btn btn-sm">
+                                <i class="fas fa-plus"></i> Schedule Session
+                            </button>
+                        </div>
+                        <div class="card-body">
+                            <div class="list-group">
+                                <div class="list-group-item">
+                                    <div class="d-flex w-100 justify-content-between">
+                                        <h6 class="mb-1">Morning Drill Formation</h6>
+                                        <small>Today, 06:00 AM</small>
+                                    </div>
+                                    <p class="mb-1">Parade Ground - Basic drill and ceremony</p>
+                                    <small>Instructor: CPT John Doe</small>
+                                </div>
+                                <div class="list-group-item">
+                                    <div class="d-flex w-100 justify-content-between">
+                                        <h6 class="mb-1">Physical Training</h6>
+                                        <small>Today, 04:00 PM</small>
+                                    </div>
+                                    <p class="mb-1">Training Field - Cardio and strength exercises</p>
+                                    <small>Instructor: SGT Mike Johnson</small>
+                                </div>
+                                <div class="list-group-item">
+                                    <div class="d-flex w-100 justify-content-between">
+                                        <h6 class="mb-1">Classroom Instruction</h6>
+                                        <small>Tomorrow, 09:00 AM</small>
+                                    </div>
+                                    <p class="mb-1">Classroom A - Military history and customs</p>
+                                    <small>Instructor: 1LT Jane Smith</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Reports Tab -->
+                <div class="tab-pane fade" id="reports">
+                    <h2 class="mb-4">Reports & Analytics</h2>
+                    
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="military-card">
+                                <div class="card-header">
+                                    <h5 class="mb-0">Generate Reports</h5>
+                                </div>
+                                <div class="card-body">
+                                    <div class="d-grid gap-2">
+                                        <button class="btn military-btn">
+                                            <i class="fas fa-file-pdf"></i> Daily Attendance Report
+                                        </button>
+                                        <button class="btn military-btn">
+                                            <i class="fas fa-file-excel"></i> Weekly Summary
+                                        </button>
+                                        <button class="btn military-btn">
+                                            <i class="fas fa-file-csv"></i> Staff Performance Report
+                                        </button>
+                                        <button class="btn military-btn">
+                                            <i class="fas fa-file-alt"></i> Custom Report
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-6">
+                            <div class="military-card">
+                                <div class="card-header">
+                                    <h5 class="mb-0">Recent Reports</h5>
+                                </div>
+                                <div class="card-body">
+                                    <div class="list-group list-group-flush">
+                                        <div class="list-group-item d-flex justify-content-between align-items-center">
+                                            <div>
+                                                <i class="fas fa-file-pdf text-danger"></i>
+                                                <span class="ms-2">November 2024 Attendance</span>
+                                            </div>
+                                            <button class="btn btn-sm btn-outline-primary">Download</button>
+                                        </div>
+                                        <div class="list-group-item d-flex justify-content-between align-items-center">
+                                            <div>
+                                                <i class="fas fa-file-excel text-success"></i>
+                                                <span class="ms-2">Staff Performance Q3</span>
+                                            </div>
+                                            <button class="btn btn-sm btn-outline-primary">Download</button>
+                                        </div>
+                                        <div class="list-group-item d-flex justify-content-between align-items-center">
+                                            <div>
+                                                <i class="fas fa-file-csv text-info"></i>
+                                                <span class="ms-2">Training Sessions Report</span>
+                                            </div>
+                                            <button class="btn btn-sm btn-outline-primary">Download</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+$(document).ready(function() {
+    // Initialize tooltips
+    $('[data-bs-toggle="tooltip"]').tooltip();
+    
+    // Handle tab navigation
+    $('.nav-link').on('click', function(e) {
+        $('.nav-link').removeClass('active');
+        $(this).addClass('active');
+    });
+});
+</script>
+{% endblock %}

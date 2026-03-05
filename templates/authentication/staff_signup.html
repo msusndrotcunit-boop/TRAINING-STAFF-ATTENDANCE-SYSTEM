@@ -1,0 +1,442 @@
+{% extends 'base.html' %}
+
+{% block title %}Staff Registration - Mindanao State University - Sultan Naga Dimaporo ROTC Attendance System{% endblock %}
+
+{% block extra_css %}
+<style>
+    .signup-container {
+        background: linear-gradient(135deg, var(--army-dark-green) 0%, #2d3a1a 100%);
+        min-height: 100vh;
+        padding: 2rem 0;
+    }
+    
+    .signup-card {
+        background: white;
+        border-radius: 20px;
+        box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        overflow: hidden;
+    }
+    
+    .signup-header {
+        background: linear-gradient(135deg, var(--army-green) 0%, var(--army-dark-green) 100%);
+        color: white;
+        padding: 2rem;
+        text-align: center;
+    }
+    
+    .signup-header h2 {
+        margin: 0;
+        font-family: 'Russo One', sans-serif;
+    }
+    
+    .signup-body {
+        padding: 2rem;
+    }
+    
+    .form-section {
+        background: #f8f9fa;
+        border-radius: 12px;
+        padding: 1.5rem;
+        margin-bottom: 1.5rem;
+        border-left: 4px solid var(--army-green);
+    }
+    
+    .form-section-title {
+        color: var(--army-green);
+        font-weight: 600;
+        margin-bottom: 1rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+    
+    .military-input {
+        border: 2px solid #e0e0e0;
+        border-radius: 10px;
+        padding: 0.75rem 1rem;
+        transition: all 0.3s ease;
+        font-size: 0.95rem;
+    }
+    
+    .military-input:focus {
+        border-color: var(--army-green);
+        box-shadow: 0 0 0 0.2rem rgba(75, 83, 32, 0.25);
+        transform: translateY(-2px);
+    }
+    
+    .military-select {
+        border: 2px solid #e0e0e0;
+        border-radius: 10px;
+        padding: 0.75rem 1rem;
+        transition: all 0.3s ease;
+        background-color: white;
+    }
+    
+    .military-select:focus {
+        border-color: var(--army-green);
+        box-shadow: 0 0 0 0.2rem rgba(75, 83, 32, 0.25);
+    }
+    
+    .btn-signup {
+        background: linear-gradient(135deg, var(--army-green) 0%, var(--army-dark-green) 100%);
+        color: white;
+        border: none;
+        border-radius: 12px;
+        padding: 1rem 2rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        width: 100%;
+        transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        box-shadow: 0 4px 6px rgba(0,0,0,0.2);
+    }
+    
+    .btn-signup:hover {
+        transform: translateY(-3px) rotate(-1deg) scale(1.02);
+        box-shadow: 0 8px 20px rgba(75, 83, 32, 0.4);
+        border-radius: 16px;
+    }
+    
+    .qr-display {
+        background: white;
+        border-radius: 15px;
+        padding: 2rem;
+        text-align: center;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        margin-top: 2rem;
+    }
+    
+    .qr-code-container {
+        background: white;
+        padding: 1rem;
+        border-radius: 10px;
+        display: inline-block;
+        margin: 1rem 0;
+        border: 3px solid var(--army-gold);
+    }
+    
+    .hidden {
+        display: none !important;
+    }
+    
+    .qr-code-image {
+        max-width: 250px;
+    }
+    
+    .success-message {
+        background: linear-gradient(135deg, #28a745 0%, #1e7e34 100%);
+        color: white;
+        padding: 1.5rem;
+        border-radius: 12px;
+        text-align: center;
+        margin-bottom: 2rem;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="signup-container">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-10">
+                <div class="signup-card">
+                    <div class="signup-header">
+                        <i class="fas fa-user-plus fa-3x mb-3"></i>
+                        <h2>ROTC STAFF REGISTRATION</h2>
+                        <p class="mb-0">Mindanao State University - Sultan Naga Dimaporo</p>
+                    </div>
+                    
+                    <div class="signup-body">
+                        <form id="staffSignupForm" method="post" action="{% url 'authentication:staff_signup' %}">
+                            {% csrf_token %}
+                            
+                            <!-- Personal Information Section -->
+                            <div class="form-section">
+                                <div class="form-section-title">
+                                    <i class="fas fa-user"></i>
+                                    Personal Information
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-4 mb-3">
+                                        <label for="firstName" class="form-label">First Name <span class="text-danger">*</span></label>
+                                        <input type="text" class="form-control military-input" id="firstName" name="first_name" required placeholder="Enter first name">
+                                    </div>
+                                    <div class="col-md-4 mb-3">
+                                        <label for="middleName" class="form-label">Middle Name</label>
+                                        <input type="text" class="form-control military-input" id="middleName" name="middle_name" placeholder="Enter middle name">
+                                    </div>
+                                    <div class="col-md-4 mb-3">
+                                        <label for="lastName" class="form-label">Last Name <span class="text-danger">*</span></label>
+                                        <input type="text" class="form-control military-input" id="lastName" name="last_name" required placeholder="Enter last name">
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                        <label for="suffix" class="form-label">Suffix (if any)</label>
+                                        <select class="form-select military-select" id="suffix" name="suffix">
+                                            <option value="">None</option>
+                                            <option value="Jr">Jr.</option>
+                                            <option value="Sr">Sr.</option>
+                                            <option value="II">II</option>
+                                            <option value="III">III</option>
+                                            <option value="IV">IV</option>
+                                            <option value="V">V</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <label for="gender" class="form-label">Gender <span class="text-danger">*</span></label>
+                                        <select class="form-select military-select" id="gender" name="gender" required>
+                                            <option value="">Select Gender</option>
+                                            <option value="Male">Male</option>
+                                            <option value="Female">Female</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Military Information Section -->
+                            <div class="form-section">
+                                <div class="form-section-title">
+                                    <i class="fas fa-medal"></i>
+                                    Military Information
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                        <label for="rank" class="form-label">Rank <span class="text-danger">*</span></label>
+                                        <select class="form-select military-select" id="rank" name="rank" required>
+                                            <option value="">Select Rank</option>
+                                            <optgroup label="Enlisted Personnel">
+                                                <option value="Pvt">Private (Pvt)</option>
+                                                <option value="PFC">Private First Class (PFC)</option>
+                                                <option value="Cpl">Corporal (Cpl)</option>
+                                                <option value="Sgt">Sergeant (Sgt)</option>
+                                                <option value="SSg">Staff Sergeant (SSg)</option>
+                                                <option value="TSg">Technical Sergeant (TSg)</option>
+                                                <option value="MSg">Master Sergeant (MSg)</option>
+                                            </optgroup>
+                                            <optgroup label="Officer Personnel">
+                                                <option value="2LT">Second Lieutenant (2LT)</option>
+                                                <option value="1LT">First Lieutenant (1LT)</option>
+                                                <option value="CPT">Captain (CPT)</option>
+                                                <option value="MAJ">Major (MAJ)</option>
+                                                <option value="LTC">Lieutenant Colonel (LTC)</option>
+                                                <option value="COL">Colonel (COL)</option>
+                                                <option value="BGEN">Brigadier General (BGEN)</option>
+                                                <option value="MGEN">Major General (MGEN)</option>
+                                                <option value="LTGEN">Lieutenant General (LTGEN)</option>
+                                                <option value="GEN">General (GEN)</option>
+                                            </optgroup>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <label for="serviceNumber" class="form-label">AFPSN <span class="text-danger">*</span></label>
+                                        <input type="text" class="form-control military-input" id="serviceNumber" name="service_number" required placeholder="Enter AFPSN">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Birth Information Section -->
+                            <div class="form-section">
+                                <div class="form-section-title">
+                                    <i class="fas fa-calendar-alt"></i>
+                                    Birth Information
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                        <label for="birthdate" class="form-label">Birthdate <span class="text-danger">*</span></label>
+                                        <input type="date" class="form-control military-input" id="birthdate" name="birthdate" required>
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <label for="age" class="form-label">Age</label>
+                                        <input type="number" class="form-control military-input" id="age" name="age" readonly placeholder="Auto-calculated">
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                        <label for="nationality" class="form-label">Nationality <span class="text-danger">*</span></label>
+                                        <input type="text" class="form-control military-input" id="nationality" name="nationality" required value="Filipino" placeholder="Enter nationality">
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <label for="religion" class="form-label">Religion</label>
+                                        <input type="text" class="form-control military-input" id="religion" name="religion" placeholder="Enter religion">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Contact Information Section -->
+                            <div class="form-section">
+                                <div class="form-section-title">
+                                    <i class="fas fa-address-card"></i>
+                                    Contact Information
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                        <label for="cellNumber" class="form-label">Cell Number <span class="text-danger">*</span></label>
+                                        <input type="tel" class="form-control military-input" id="cellNumber" name="cell_number" required placeholder="+63 XXX XXX XXXX">
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <label for="facebook" class="form-label">Facebook Profile</label>
+                                        <input type="text" class="form-control military-input" id="facebook" name="facebook" placeholder="facebook.com/username">
+                                    </div>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="address" class="form-label">Complete Address <span class="text-danger">*</span></label>
+                                    <textarea class="form-control military-input" id="address" name="address" rows="3" required placeholder="Enter complete address"></textarea>
+                                </div>
+                            </div>
+
+                            <!-- Account Information Section -->
+                            <div class="form-section">
+                                <div class="form-section-title">
+                                    <i class="fas fa-lock"></i>
+                                    Account Information
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                        <label for="username" class="form-label">Username <span class="text-danger">*</span></label>
+                                        <input type="text" class="form-control military-input" id="username" name="username" required placeholder="Enter username">
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <label for="email" class="form-label">Email Address <span class="text-danger">*</span></label>
+                                        <input type="email" class="form-control military-input" id="email" name="email" required placeholder="Enter email address">
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                        <label for="password" class="form-label">Password <span class="text-danger">*</span></label>
+                                        <input type="password" class="form-control military-input" id="password" name="password" required placeholder="Enter password (min 8 characters)">
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <label for="confirmPassword" class="form-label">Confirm Password <span class="text-danger">*</span></label>
+                                        <input type="password" class="form-control military-input" id="confirmPassword" name="confirm_password" required placeholder="Confirm password">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Emergency Contact Section -->
+                            <div class="form-section">
+                                <div class="form-section-title">
+                                    <i class="fas fa-phone-alt"></i>
+                                    Emergency Contact
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                        <label for="emergencyName" class="form-label">Contact Person Name</label>
+                                        <input type="text" class="form-control military-input" id="emergencyName" name="emergency_name" placeholder="Enter emergency contact name">
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <label for="emergencyNumber" class="form-label">Contact Person Number</label>
+                                        <input type="tel" class="form-control military-input" id="emergencyNumber" name="emergency_number" placeholder="+63 XXX XXX XXXX">
+                                    </div>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="emergencyRelationship" class="form-label">Relationship</label>
+                                    <input type="text" class="form-control military-input" id="emergencyRelationship" name="emergency_relationship" placeholder="e.g., Parent, Spouse, Sibling">
+                                </div>
+                            </div>
+
+                            <div class="text-center mt-4">
+                                <button type="submit" class="btn btn-signup btn-lg">
+                                    <i class="fas fa-user-plus"></i> REGISTER STAFF
+                                </button>
+                            </div>
+                        </form>
+
+                        <!-- QR Code Display Section (Hidden initially) -->
+                        <div id="qrDisplaySection" class="qr-display hidden">
+                            <div class="success-message">
+                                <i class="fas fa-check-circle fa-2x mb-2"></i>
+                                <h4>Registration Successful!</h4>
+                                <p>Your account has been created successfully. Here is your unique QR code:</p>
+                            </div>
+                            
+                            <div class="qr-code-container">
+                                <img id="qrCodeImage" src="" alt="Your QR Code" class="img-fluid qr-code-image">
+                            </div>
+                            
+                            <div class="mt-3">
+                                <h5 id="qrUserName"></h5>
+                                <p class="text-muted">AFPSN: <span id="qrServiceNumber"></span></p>
+                                <p class="text-muted">Rank: <span id="qrRank"></span></p>
+                            </div>
+                            
+                            <div class="mt-4">
+                                <a href="{% url 'authentication:staff_login' %}" class="btn military-btn btn-lg">
+                                    <i class="fas fa-sign-in-alt"></i> Proceed to Login
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Calculate age from birthdate
+    document.getElementById('birthdate').addEventListener('change', function() {
+        const birthdate = new Date(this.value);
+        const today = new Date();
+        let age = today.getFullYear() - birthdate.getFullYear();
+        const monthDiff = today.getMonth() - birthdate.getMonth();
+        if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthdate.getDate())) {
+            age--;
+        }
+        document.getElementById('age').value = age;
+    });
+
+    // Form submission handler
+    document.getElementById('staffSignupForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        // Password validation
+        const password = document.getElementById('password').value;
+        const confirmPassword = document.getElementById('confirmPassword').value;
+        
+        if (password !== confirmPassword) {
+            alert('Passwords do not match!');
+            return;
+        }
+        
+        if (password.length < 8) {
+            alert('Password must be at least 8 characters long!');
+            return;
+        }
+        
+        // Submit form via AJAX
+        const formData = new FormData(this);
+        
+        fetch(this.action, {
+            method: 'POST',
+            body: formData,
+            headers: {
+                'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                // Hide form and show QR code
+                document.getElementById('staffSignupForm').style.display = 'none';
+                document.getElementById('qrDisplaySection').style.display = 'block';
+                
+                // Display QR code
+                document.getElementById('qrCodeImage').src = data.qr_code_url;
+                document.getElementById('qrUserName').textContent = data.full_name;
+                document.getElementById('qrServiceNumber').textContent = data.service_number;
+                document.getElementById('qrRank').textContent = data.rank;
+                
+                // Scroll to QR display
+                document.getElementById('qrDisplaySection').scrollIntoView({ behavior: 'smooth' });
+            } else {
+                alert('Registration failed: ' + data.error);
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('An error occurred during registration. Please try again.');
+        });
+    });
+</script>
+{% endblock %}

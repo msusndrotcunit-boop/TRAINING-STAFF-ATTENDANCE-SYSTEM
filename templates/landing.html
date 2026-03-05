@@ -1,0 +1,471 @@
+{% extends 'base.html' %}
+
+{% block title %}Home - Mindanao State University - Sultan Naga Dimaporo ROTC Attendance System{% endblock %}
+
+{% block extra_css %}
+<style>
+    .modern-landing {
+        background: linear-gradient(135deg, #f5f7fa 0%, #e4e8f0 100%);
+        min-height: 100vh;
+    }
+
+    .hero-modern {
+        background: linear-gradient(135deg, var(--army-dark-green) 0%, #2d3a1a 100%);
+        min-height: 90vh;
+        display: flex;
+        align-items: center;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .hero-modern::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="50" cy="50" r="40" fill="none" stroke="rgba(255,215,0,0.1)" stroke-width="0.5"/></svg>');
+        background-size: 100px 100px;
+        opacity: 0.3;
+    }
+
+    .hero-content-modern {
+        position: relative;
+        z-index: 1;
+        padding: 4rem 2rem;
+    }
+
+    .badge-modern {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.75rem;
+        background: rgba(255, 215, 0, 0.15);
+        color: var(--army-gold);
+        padding: 0.75rem 1.5rem;
+        border-radius: 50px;
+        font-weight: 600;
+        font-size: 0.9375rem;
+        border: 2px solid rgba(255, 215, 0, 0.3);
+        margin-bottom: 2rem;
+        -webkit-backdrop-filter: blur(10px);
+        backdrop-filter: blur(10px);
+    }
+
+    .title-modern {
+        font-size: 3.5rem;
+        font-weight: 800;
+        color: white;
+        line-height: 1.2;
+        margin-bottom: 1.5rem;
+    }
+
+    .title-modern span {
+        color: var(--army-gold);
+    }
+
+    .subtitle-modern {
+        font-size: 1.25rem;
+        color: rgba(255, 255, 255, 0.8);
+        max-width: 600px;
+        margin-bottom: 2.5rem;
+        line-height: 1.6;
+    }
+
+    .hero-buttons {
+        display: flex;
+        gap: 1rem;
+        flex-wrap: wrap;
+    }
+
+    .btn-modern {
+        padding: 1rem 2rem;
+        border-radius: 12px;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        transition: all 0.3s ease;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.75rem;
+    }
+
+    .btn-modern-primary {
+        background: linear-gradient(135deg, var(--army-gold) 0%, #c9a227 100%);
+        color: var(--army-dark-green);
+        box-shadow: 0 4px 15px rgba(255, 215, 0, 0.3);
+    }
+
+    .btn-modern-primary:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 8px 25px rgba(255, 215, 0, 0.4);
+        color: var(--army-dark-green);
+    }
+
+    .btn-modern-secondary {
+        background: rgba(255, 255, 255, 0.1);
+        color: white;
+        border: 2px solid rgba(255, 255, 255, 0.3);
+        -webkit-backdrop-filter: blur(10px);
+        backdrop-filter: blur(10px);
+    }
+
+    .btn-modern-secondary:hover {
+        background: rgba(255, 255, 255, 0.2);
+        color: white;
+        transform: translateY(-3px);
+    }
+
+    .hero-image-modern {
+        position: relative;
+        z-index: 1;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .logo-container {
+        position: relative;
+        width: 300px;
+        height: 300px;
+    }
+
+    .logo-glow {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 350px;
+        height: 350px;
+        background: radial-gradient(circle, rgba(255, 215, 0, 0.3) 0%, transparent 70%);
+        border-radius: 50%;
+        animation: pulse 3s ease-in-out infinite;
+    }
+
+    @keyframes pulse {
+        0%, 100% { transform: translate(-50%, -50%) scale(1); opacity: 0.5; }
+        50% { transform: translate(-50%, -50%) scale(1.1); opacity: 0.8; }
+    }
+
+    .logo-img {
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
+        border-radius: 50%;
+        border: 4px solid var(--army-gold);
+        box-shadow: 0 0 40px rgba(255, 215, 0, 0.4);
+        position: relative;
+        z-index: 1;
+    }
+
+    .features-modern {
+        padding: 6rem 2rem;
+        background: white;
+    }
+
+    .section-header {
+        text-align: center;
+        margin-bottom: 4rem;
+    }
+
+    .section-title {
+        font-size: 2.5rem;
+        font-weight: 700;
+        color: var(--army-dark-green);
+        margin-bottom: 1rem;
+    }
+
+    .section-subtitle {
+        font-size: 1.125rem;
+        color: #6c757d;
+        max-width: 600px;
+        margin: 0 auto;
+    }
+
+    .features-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 2rem;
+        max-width: 1400px;
+        margin: 0 auto;
+    }
+
+    .feature-card-modern {
+        background: white;
+        border-radius: 20px;
+        padding: 2.5rem;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+        transition: all 0.3s ease;
+        border: 1px solid rgba(0, 0, 0, 0.04);
+        text-align: center;
+    }
+
+    .feature-card-modern:hover {
+        transform: translateY(-8px);
+        box-shadow: 0 12px 40px rgba(0, 0, 0, 0.12);
+    }
+
+    .feature-icon-modern {
+        width: 80px;
+        height: 80px;
+        border-radius: 20px;
+        background: linear-gradient(135deg, var(--army-green) 0%, var(--army-dark-green) 100%);
+        color: white;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 2rem;
+        margin: 0 auto 1.5rem;
+        box-shadow: 0 8px 20px rgba(75, 83, 32, 0.3);
+    }
+
+    .feature-title {
+        font-size: 1.25rem;
+        font-weight: 700;
+        color: #2d3748;
+        margin-bottom: 0.75rem;
+    }
+
+    .feature-desc {
+        color: #718096;
+        line-height: 1.6;
+    }
+
+    .stats-modern {
+        background: linear-gradient(135deg, var(--army-green) 0%, var(--army-dark-green) 100%);
+        padding: 4rem 2rem;
+    }
+
+    .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 2rem;
+        max-width: 1200px;
+        margin: 0 auto;
+        text-align: center;
+    }
+
+    .stat-item {
+        color: white;
+    }
+
+    .stat-number {
+        font-size: 3rem;
+        font-weight: 800;
+        margin-bottom: 0.5rem;
+    }
+
+    .stat-label {
+        font-size: 1rem;
+        opacity: 0.9;
+    }
+
+    .cta-modern {
+        padding: 6rem 2rem;
+        background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+        text-align: center;
+    }
+
+    .cta-title {
+        font-size: 2rem;
+        font-weight: 700;
+        color: var(--army-dark-green);
+        margin-bottom: 1rem;
+    }
+
+    .cta-text {
+        color: #6c757d;
+        max-width: 600px;
+        margin: 0 auto 2rem;
+    }
+
+    @media (max-width: 768px) {
+        .title-modern {
+            font-size: 2.5rem;
+        }
+        
+        .stats-grid {
+            grid-template-columns: repeat(2, 1fr);
+        }
+        
+        .hero-buttons {
+            justify-content: center;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="modern-landing">
+    <!-- Hero Section -->
+    <section class="hero-modern">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-lg-7">
+                    <div class="hero-content-modern">
+                        <div class="badge-modern">
+                            <i class="fas fa-shield-alt"></i>
+                            <span>Mindanao State University - Sultan Naga Dimaporo ROTC Unit</span>
+                        </div>
+                        <h1 class="title-modern">
+                            Modern <span>Attendance</span> Management System
+                        </h1>
+                        <p class="subtitle-modern">
+                            Streamline your ROTC training operations with our cutting-edge QR code-based attendance tracking system. Designed for military discipline and efficiency.
+                        </p>
+                        <div class="hero-buttons">
+                            <a href="{% url 'authentication:login' %}" class="btn-modern btn-modern-primary">
+                                <i class="fas fa-sign-in-alt"></i> Get Started
+                            </a>
+                            <a href="{% url 'authentication:about' %}" class="btn-modern btn-modern-secondary">
+                                <i class="fas fa-info-circle"></i> Learn More
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-5">
+                    <div class="hero-image-modern">
+                        <div class="logo-container">
+                            <div class="logo-glow"></div>
+                            <img src="/static/images/msu_logo.png" alt="MSU Logo" class="logo-img">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Stats Section -->
+    <section class="stats-modern">
+        <div class="stats-grid">
+            <div class="stat-item">
+                <div class="stat-number">156</div>
+                <div class="stat-label">Active Staff</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number">98%</div>
+                <div class="stat-label">Attendance Rate</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number">24/7</div>
+                <div class="stat-label">System Uptime</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number">50+</div>
+                <div class="stat-label">Daily Scans</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section class="features-modern">
+        <div class="section-header">
+            <h2 class="section-title">System Capabilities</h2>
+            <p class="section-subtitle">Comprehensive tools designed for modern ROTC management and military-grade operations</p>
+        </div>
+        
+        <div class="features-grid">
+            <div class="feature-card-modern">
+                <div class="feature-icon-modern">
+                    <i class="fas fa-qrcode"></i>
+                </div>
+                <h3 class="feature-title">QR Code Attendance</h3>
+                <p class="feature-desc">Fast, secure, and accurate attendance tracking using modern QR code technology with real-time validation.</p>
+            </div>
+            
+            <div class="feature-card-modern">
+                <div class="feature-icon-modern">
+                    <i class="fas fa-users-cog"></i>
+                </div>
+                <h3 class="feature-title">Staff Management</h3>
+                <p class="feature-desc">Complete personnel profiles with military ranks, specializations, and comprehensive records management.</p>
+            </div>
+            
+            <div class="feature-card-modern">
+                <div class="feature-icon-modern">
+                    <i class="fas fa-chart-bar"></i>
+                </div>
+                <h3 class="feature-title">Analytics Dashboard</h3>
+                <p class="feature-desc">Real-time statistics, attendance trends, and comprehensive reporting for data-driven decisions.</p>
+            </div>
+            
+            <div class="feature-card-modern">
+                <div class="feature-icon-modern">
+                    <i class="fas fa-shield-alt"></i>
+                </div>
+                <h3 class="feature-title">Security First</h3>
+                <p class="feature-desc">Role-based access control, encrypted data, and comprehensive audit trails for military-grade security.</p>
+            </div>
+            
+            <div class="feature-card-modern">
+                <div class="feature-icon-modern">
+                    <i class="fas fa-mobile-alt"></i>
+                </div>
+                <h3 class="feature-title">Mobile Ready</h3>
+                <p class="feature-desc">Responsive design works seamlessly across desktop, tablet, and mobile devices for field operations.</p>
+            </div>
+            
+            <div class="feature-card-modern">
+                <div class="feature-icon-modern">
+                    <i class="fas fa-file-export"></i>
+                </div>
+                <h3 class="feature-title">Export Reports</h3>
+                <p class="feature-desc">Generate and export detailed attendance reports in multiple formats for administrative use.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="cta-modern">
+        <h2 class="cta-title">Ready to Modernize Your ROTC Operations?</h2>
+        <p class="cta-text">Join the ranks of military units using technology to improve efficiency and accountability.</p>
+        <a href="{% url 'authentication:login' %}" class="btn-modern btn-modern-primary">
+            <i class="fas fa-rocket"></i> Start Now
+        </a>
+    </section>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+$(document).ready(function() {
+    // Animated counter for statistics
+    function animateCounter() {
+        $('.stat-number').each(function() {
+            const $this = $(this);
+            const countTo = parseInt($this.attr('data-count')) || parseInt($this.text());
+            const duration = 2000;
+            
+            $({ countNum: 0 }).animate({
+                countNum: countTo
+            }, {
+                duration: duration,
+                easing: 'swing',
+                step: function() {
+                    $this.text(Math.floor(this.countNum));
+                },
+                complete: function() {
+                    $this.text(this.countNum);
+                }
+            });
+        });
+    }
+    
+    // Trigger counter animation when stats section is visible
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                animateCounter();
+                observer.disconnect();
+            }
+        });
+    });
+    
+    const statsSection = document.querySelector('.stats-modern');
+    if (statsSection) {
+        observer.observe(statsSection);
+    }
+});
+</script>
+{% endblock %}

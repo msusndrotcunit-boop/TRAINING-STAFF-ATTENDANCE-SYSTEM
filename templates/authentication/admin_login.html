@@ -1,0 +1,504 @@
+{% extends 'base.html' %}
+
+{% block title %}Administrator Login - Mindanao State University - Sultan Naga Dimaporo ROTC Attendance System{% endblock %}
+
+{% block content %}
+<div class="container-fluid min-vh-100">
+    <div class="row min-vh-100">
+        <!-- Left Panel - Login Form -->
+        <div class="col-lg-6 d-flex align-items-center justify-content-center">
+            <div class="login-container">
+                <div class="military-card shadow-lg">
+                    <div class="card-header text-center border-0 pb-0">
+                        <div class="mb-4">
+                            <i class="fas fa-user-shield fa-3x text-warning"></i>
+                        </div>
+                        <h3 class="military-title">ADMINISTRATOR LOGIN</h3>
+                        <p class="text-muted">Mindanao State University - Sultan Naga Dimaporo ROTC System Administration</p>
+                    </div>
+                    <div class="card-body pt-0">
+                        <form method="post" id="adminLoginForm">
+                            {% csrf_token %}
+                            <input type="hidden" name="user_type" value="admin">
+                            
+                            <div class="mb-4">
+                                <label for="email" class="form-label">
+                                    <i class="fas fa-envelope"></i> Administrator Email
+                                </label>
+                                <div class="input-group">
+                                    <span class="input-group-text military-input-group-admin">
+                                        <i class="fas fa-user-shield"></i>
+                                    </span>
+                                    <input type="email" class="form-control military-form-control" id="email" 
+                                           name="email" placeholder="Enter admin email" required>
+                                </div>
+                            </div>
+                            
+                            <div class="mb-4">
+                                <label for="password" class="form-label">
+                                    <i class="fas fa-lock"></i> Administrator Password
+                                </label>
+                                <div class="input-group">
+                                    <span class="input-group-text military-input-group-admin">
+                                        <i class="fas fa-lock"></i>
+                                    </span>
+                                    <input type="password" class="form-control military-form-control" id="password" 
+                                           name="password" placeholder="Enter admin password" required>
+                                    <button class="btn btn-outline-secondary" type="button" id="togglePassword" title="Toggle password visibility">
+                                        <i class="fas fa-eye"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            
+                            <div class="mb-4">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="rememberMe" name="remember_me">
+                                    <label class="form-check-label" for="rememberMe">
+                                        Remember me on this device
+                                    </label>
+                                </div>
+                            </div>
+                            
+                            <div class="mb-4">
+                                <div class="alert alert-warning military-alert">
+                                    <i class="fas fa-exclamation-triangle"></i>
+                                    <strong>Security Notice:</strong> This system is for authorized administrators only. 
+                                    All access attempts are logged and monitored.
+                                </div>
+                            </div>
+                            
+                            <div class="d-grid gap-2 mb-4">
+                                <button type="submit" class="military-btn btn-lg">
+                                    <i class="fas fa-shield-alt"></i> Login as Administrator
+                                </button>
+                            </div>
+                            
+                            <div class="text-center">
+                                <small class="text-muted">
+                                    <i class="fas fa-lock"></i>
+                                    Secure administrative access
+                                </small>
+                            </div>
+                        </form>
+                        
+                        <hr class="my-4">
+                        
+                        <div class="text-center">
+                            <a href="{% url 'authentication:staff_login' %}" class="military-link">
+                                <i class="fas fa-user"></i> Staff Login
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Admin Quick Actions -->
+                <div class="mt-4">
+                    <div class="military-card">
+                        <div class="card-body">
+                            <h6 class="text-center mb-3">Quick Actions</h6>
+                            <div class="row text-center">
+                                <div class="col-4">
+                                    <a href="#" class="admin-action" onclick="showSystemStatus()">
+                                        <i class="fas fa-server fa-2x text-info"></i>
+                                        <small>System Status</small>
+                                    </a>
+                                </div>
+                                <div class="col-4">
+                                    <a href="#" class="admin-action" onclick="showUserLogs()">
+                                        <i class="fas fa-history fa-2x text-warning"></i>
+                                        <small>User Logs</small>
+                                    </a>
+                                </div>
+                                <div class="col-4">
+                                    <a href="#" class="admin-action" onclick="showSecurityInfo()">
+                                        <i class="fas fa-shield-alt fa-2x text-success"></i>
+                                        <small>Security</small>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Right Panel - Admin Information -->
+        <div class="col-lg-6 d-none d-lg-flex align-items-center justify-content-center bg-admin">
+            <div class="info-panel text-white text-center p-5">
+                <div class="mb-5">
+                    <i class="fas fa-cog fa-5x text-warning mb-4"></i>
+                    <h2 class="military-title">System Administration</h2>
+                    <p class="lead">Complete control and management capabilities</p>
+                </div>
+                
+                <div class="admin-features mb-5">
+                    <div class="feature-item mb-4">
+                        <i class="fas fa-users-cog fa-3x text-success"></i>
+                        <h5>User Management</h5>
+                        <p>Create, manage, and authorize user accounts with role-based access</p>
+                    </div>
+                    <div class="feature-item mb-4">
+                        <i class="fas fa-chart-bar fa-3x text-success"></i>
+                        <h5>System Analytics</h5>
+                        <p>Comprehensive reporting and system performance monitoring</p>
+                    </div>
+                    <div class="feature-item mb-4">
+                        <i class="fas fa-cogs fa-3x text-success"></i>
+                        <h5>Configuration</h5>
+                        <p>System settings, security policies, and operational parameters</p>
+                    </div>
+                </div>
+                
+                <div class="admin-stats">
+                    <div class="stat-row">
+                        <div class="stat-item">
+                            <i class="fas fa-users text-info"></i>
+                            <div>
+                                <div class="stat-number" id="totalUsers">127</div>
+                                <div class="stat-label">Total Users</div>
+                            </div>
+                        </div>
+                        <div class="stat-item">
+                            <i class="fas fa-shield-alt text-success"></i>
+                            <div>
+                                <div class="stat-number" id="activeSessions">8</div>
+                                <div class="stat-label">Active Sessions</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="stat-row">
+                        <div class="stat-item">
+                            <i class="fas fa-server text-warning"></i>
+                            <div>
+                                <div class="stat-number" id="systemUptime">99.9%</div>
+                                <div class="stat-label">System Uptime</div>
+                            </div>
+                        </div>
+                        <div class="stat-item">
+                            <i class="fas fa-database text-info"></i>
+                            <div>
+                                <div class="stat-number" id="dataProcessed">2.4GB</div>
+                                <div class="stat-label">Data Processed</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="security-notice mt-4">
+                    <div class="alert alert-info">
+                        <i class="fas fa-info-circle"></i>
+                        <strong>Security Level:</strong> HIGH<br>
+                        <small>All administrative actions are logged and monitored in real-time</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- System Status Modal -->
+<div class="modal fade" id="systemStatusModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">System Status</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" title="Close modal"></button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <h6>System Components</h6>
+                        <div class="component-status">
+                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                <span>Database Server</span>
+                                <span class="badge bg-success">Online</span>
+                            </div>
+                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                <span>Web Server</span>
+                                <span class="badge bg-success">Online</span>
+                            </div>
+                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                <span>QR Code Service</span>
+                                <span class="badge bg-success">Online</span>
+                            </div>
+                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                <span>Email Service</span>
+                                <span class="badge bg-warning">Degraded</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <h6>Performance Metrics</h6>
+                        <div class="performance-metrics">
+                            <div class="metric-item mb-2">
+                                <span>CPU Usage</span>
+                                <div class="progress">
+                                    <div class="progress-bar bg-success cpu-bar">35%</div>
+                                </div>
+                            </div>
+                            <div class="metric-item mb-2">
+                                <span>Memory Usage</span>
+                                <div class="progress">
+                                    <div class="progress-bar bg-warning memory-bar">68%</div>
+                                </div>
+                            </div>
+                            <div class="metric-item mb-2">
+                                <span>Disk Usage</span>
+                                <div class="progress">
+                                    <div class="progress-bar bg-success disk-bar">42%</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="military-btn" data-bs-dismiss="modal" title="Close system status">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+$(document).ready(function() {
+    // Update admin statistics
+    function updateAdminStats() {
+        // Simulate real-time updates
+        $('#totalUsers').text(Math.floor(Math.random() * 20) + 120);
+        $('#activeSessions').text(Math.floor(Math.random() * 5) + 6);
+        $('#dataProcessed').text((Math.random() * 2 + 1.5).toFixed(1) + 'GB');
+    }
+    
+    setInterval(updateAdminStats, 30000);
+    
+    // Toggle password visibility
+    $('#togglePassword').on('click', function() {
+        const passwordField = $('#password');
+        const icon = $(this).find('i');
+        
+        if (passwordField.attr('type') === 'password') {
+            passwordField.attr('type', 'text');
+            icon.removeClass('fa-eye').addClass('fa-eye-slash');
+        } else {
+            passwordField.attr('type', 'password');
+            icon.removeClass('fa-eye-slash').addClass('fa-eye');
+        }
+    });
+    
+    // Admin login form submission
+    $('#adminLoginForm').on('submit', function(e) {
+        e.preventDefault();
+        
+        var formData = $(this).serialize();
+        var submitBtn = $(this).find('button[type="submit"]');
+        var originalText = submitBtn.html();
+        
+        submitBtn.html('<i class="fas fa-spinner fa-spin"></i> Authenticating...').prop('disabled', true);
+        
+        $.ajax({
+            url: '{% url "authentication:api_login" %}',
+            method: 'POST',
+            data: formData,
+            success: function(response) {
+                if (response.success) {
+                    // Check if user is admin
+                    if (response.user && response.user.role === 'admin') {
+                        // Store token if using API
+                        if (response.token) {
+                            localStorage.setItem('authToken', response.token);
+                        }
+                        // Redirect to admin dashboard
+                        window.location.href = '/admin/';
+                    } else {
+                        showAlert('error', 'Access denied. This login is for administrators only.');
+                    }
+                } else {
+                    showAlert('error', response.error || 'Login failed. Please check your credentials.');
+                }
+            },
+            error: function(xhr) {
+                var errorMsg = 'Login failed. Please check your credentials.';
+                if (xhr.responseJSON && xhr.responseJSON.error) {
+                    errorMsg = xhr.responseJSON.error;
+                }
+                showAlert('error', errorMsg);
+            },
+            complete: function() {
+                submitBtn.html(originalText).prop('disabled', false);
+            }
+        });
+    });
+    
+    // Auto-focus on email field
+    $('#email').focus();
+});
+
+window.showSystemStatus = function() {
+    $('#systemStatusModal').modal('show');
+};
+
+window.showUserLogs = function() {
+    const logs = `
+        Recent Administrative Actions:
+        • Admin login - CPT John Doe - 14:32
+        • User account created - 1LT Jane Smith - 14:15
+        • QR code generated - SGT Mike Johnson - 13:45
+        • Report exported - MAJ Robert Brown - 13:20
+        • System backup completed - System - 12:00
+    `;
+    showAlert('info', logs);
+};
+
+window.showSecurityInfo = function() {
+    const security = `
+        Security Information:
+        • Last Security Scan: March 5, 2024 10:00
+        • Threat Level: LOW
+        • Failed Login Attempts: 3 (last 24 hours)
+        • Active Security Policies: 12
+        • SSL Certificate: Valid until June 2024
+        • Last Password Change: March 1, 2024
+    `;
+    showAlert('info', security);
+};
+
+function showAlert(type, message) {
+    $('.alert').remove();
+    const alertClass = type === 'error' ? 'alert-danger' : type === 'warning' ? 'alert-warning' : 'alert-success';
+    const alertHtml = `
+        <div class="alert ${alertClass} military-alert alert-dismissible fade show" role="alert">
+            ${message}
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    `;
+    $('.login-container').prepend(alertHtml);
+}
+</script>
+
+<style>
+.bg-admin {
+    background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+}
+
+.login-container {
+    width: 100%;
+    max-width: 450px;
+}
+
+.military-input-group-admin {
+    background: var(--army-gold);
+    color: var(--army-dark-green);
+    border: none;
+}
+
+.admin-action {
+    display: block;
+    color: var(--military-gray);
+    text-decoration: none;
+    padding: 1rem;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+}
+
+.admin-action:hover {
+    background: rgba(255, 255, 255, 0.1);
+    color: white;
+    transform: translateY(-2px);
+}
+
+.admin-action small {
+    display: block;
+    margin-top: 0.5rem;
+    font-size: 0.8rem;
+}
+
+.info-panel {
+    background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.admin-features .feature-item {
+    margin-bottom: 2rem;
+}
+
+.admin-features .feature-item i {
+    margin-bottom: 1rem;
+}
+
+.admin-features .feature-item h5 {
+    color: var(--army-gold);
+    margin-bottom: 0.5rem;
+}
+
+.admin-stats {
+    background: rgba(0, 0, 0, 0.3);
+    padding: 1.5rem;
+    border-radius: 8px;
+    border-left: 4px solid var(--army-gold);
+}
+
+.stat-row {
+    display: flex;
+    justify-content: space-around;
+    margin-bottom: 1rem;
+}
+
+.stat-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.stat-number {
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: var(--army-gold);
+}
+
+.stat-label {
+    font-size: 0.8rem;
+    color: var(--army-tan);
+}
+
+.component-status .badge {
+    min-width: 60px;
+}
+
+.performance-metrics .progress {
+    height: 20px;
+}
+
+.cpu-bar {
+    width: 35%;
+}
+
+.memory-bar {
+    width: 68%;
+}
+
+.disk-bar {
+    width: 42%;
+}
+
+.metric-item span {
+    display: block;
+    margin-bottom: 0.25rem;
+    font-size: 0.9rem;
+}
+
+@media (max-width: 991px) {
+    .info-panel {
+        display: none;
+    }
+    
+    .login-container {
+        padding: 2rem;
+    }
+}
+</style>
+{% endblock %}

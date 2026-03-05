@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Mindanao State University - Sultan Naga Dimaporo ROTC Attendance System{% endblock %}</title>
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Russo+One&family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --army-green: #4B5320;
+            --army-dark-green: #2E3A1F;
+            --army-light-green: #6B7E3A;
+            --army-tan: #C2B280;
+            --army-brown: #8B4513;
+            --army-gold: #FFD700;
+            --military-gray: #4A4A4A;
+        }
+        
+        body {
+            font-family: 'Roboto', sans-serif;
+            background: linear-gradient(135deg, #f5f5f5 0%, #e8e8e8 100%);
+            min-height: 100vh;
+        }
+        
+        .military-header {
+            background: linear-gradient(135deg, var(--army-green) 0%, var(--army-dark-green) 100%);
+            color: white;
+            padding: 1rem 0;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+            border-bottom: 3px solid var(--army-gold);
+        }
+        
+        .military-title {
+            font-family: 'Russo One', sans-serif;
+            font-size: 2rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+        }
+        
+        .military-subtitle {
+            font-size: 1rem;
+            color: var(--army-tan);
+            font-weight: 300;
+        }
+        
+        .military-nav {
+            background: var(--army-dark-green);
+            border-radius: 0;
+            padding: 0.5rem 0;
+        }
+        
+        .military-nav .nav-link {
+            color: white !important;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            padding: 0.75rem 1.5rem;
+            border-radius: 0 12px 12px 0;
+            transition: all 0.3s ease;
+            border-left: 3px solid transparent;
+            margin: 2px 0;
+        }
+        
+        .military-nav .nav-link:hover {
+            background: rgba(255,255,255,0.1);
+            border-left-color: var(--army-gold);
+            transform: translateX(8px);
+            border-radius: 0 12px 12px 0;
+        }
+        
+        .military-nav .nav-link.active {
+            background: rgba(255,255,255,0.15);
+            border-left-color: var(--army-gold);
+            border-radius: 0 12px 12px 0;
+        }
+        
+        .military-card {
+            background: white;
+            border: none;
+            border-radius: 16px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+            transition: all 0.3s ease;
+            overflow: hidden;
+        }
+        
+        .military-card:hover {
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+            transform: translateY(-4px);
+        }
+        
+        .military-card .card-header {
+            background: linear-gradient(135deg, var(--army-green) 0%, var(--army-dark-green) 100%);
+            color: white;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            border: none;
+            padding: 1.25rem 1.5rem;
+            border-radius: 16px 16px 0 0;
+        }
+        
+        .military-btn {
+            background: linear-gradient(135deg, var(--army-green) 0%, var(--army-dark-green) 100%);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            padding: 0.75rem 1.5rem;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.2);
+        }
+        
+        .military-btn:hover {
+            background: linear-gradient(135deg, var(--army-light-green) 0%, var(--army-green) 100%);
+            color: white;
+            transform: translateY(-3px) rotate(-2deg) scale(1.02);
+            box-shadow: 0 8px 20px rgba(75, 83, 32, 0.4);
+            border-radius: 16px;
+        }
+        
+        .military-btn:active {
+            transform: translateY(-1px) rotate(0deg) scale(0.98);
+            box-shadow: 0 4px 10px rgba(75, 83, 32, 0.3);
+        }
+        
+        .military-btn-secondary {
+            background: linear-gradient(135deg, #6c757d 0%, #495057 100%);
+            border-radius: 12px;
+        }
+        
+        .military-btn-secondary:hover {
+            background: linear-gradient(135deg, #868e96 0%, #6c757d 100%);
+            transform: translateY(-3px) rotate(2deg) scale(1.02);
+            border-radius: 16px;
+        }
+        
+        .military-badge {
+            background: linear-gradient(135deg, var(--army-gold) 0%, #c9a227 100%);
+            color: var(--army-dark-green);
+            font-weight: 600;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .military-table {
+            background: white;
+        }
+        
+        .military-table thead {
+            background: linear-gradient(135deg, var(--army-green) 0%, var(--army-dark-green) 100%);
+            color: white;
+        }
+        
+        .military-table tbody tr:hover {
+            background: rgba(75, 83, 32, 0.1);
+        }
+        
+        .military-sidebar {
+            background: var(--army-dark-green);
+            height: calc(100vh - 200px);
+            color: white;
+        }
+        
+        .military-sidebar .nav-link {
+            color: white;
+            padding: 1rem 1.5rem;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            transition: all 0.3s ease;
+        }
+        
+        .military-sidebar .nav-link:hover {
+            background: var(--army-green);
+            padding-left: 2rem;
+        }
+        
+        .military-sidebar .nav-link.active {
+            background: var(--army-green);
+            border-left: 4px solid var(--army-gold);
+        }
+        
+        .military-stats {
+            background: linear-gradient(135deg, var(--army-green) 0%, var(--army-dark-green) 100%);
+            color: white;
+            padding: 1.5rem;
+            border-radius: 0;
+            text-align: center;
+            border-left: 4px solid var(--army-gold);
+        }
+        
+        .military-stats .stats-number {
+            font-size: 2.5rem;
+            font-weight: 700;
+            font-family: 'Russo One', sans-serif;
+        }
+        
+        .military-stats .stats-label {
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--army-tan);
+        }
+        
+        .military-alert {
+            border-left: 4px solid var(--army-green);
+            background: rgba(75, 83, 32, 0.1);
+        }
+        
+        .military-form-control {
+            border: 2px solid #e0e0e0;
+            border-radius: 0;
+            transition: all 0.3s ease;
+        }
+        
+        .military-form-control:focus {
+            border-color: var(--army-green);
+            box-shadow: 0 0 0 0.2rem rgba(75, 83, 32, 0.25);
+        }
+        
+        .military-footer {
+            background: var(--army-dark-green);
+            color: white;
+            padding: 2rem 0;
+            margin-top: 3rem;
+            border-top: 3px solid var(--army-gold);
+        }
+        
+        .rank-insignia {
+            width: 30px;
+            height: 30px;
+            background: var(--army-gold);
+            border-radius: 50%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            color: var(--army-dark-green);
+            font-size: 0.8rem;
+        }
+        
+        .attendance-status-present {
+            background: #28a745;
+            color: white;
+            padding: 0.25rem 0.5rem;
+            border-radius: 0;
+            font-size: 0.8rem;
+        }
+        
+        .attendance-status-absent {
+            background: #dc3545;
+            color: white;
+            padding: 0.25rem 0.5rem;
+            border-radius: 0;
+            font-size: 0.8rem;
+        }
+        
+        .attendance-status-late {
+            background: #ffc107;
+            color: #212529;
+            padding: 0.25rem 0.5rem;
+            border-radius: 0;
+            font-size: 0.8rem;
+        }
+        
+        @media (max-width: 768px) {
+            .military-title {
+                font-size: 1.5rem;
+            }
+            
+            .military-sidebar {
+                min-height: 0;
+            }
+        }
+    </style>
+    
+    {% block extra_css %}
+    {% endblock %}
+</head>
+<body>
+    <!-- Military Header -->
+    <header class="military-header">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-md-8">
+                    <h1 class="military-title">
+                        <i class="fas fa-shield-alt"></i> Mindanao State University - Sultan Naga Dimaporo ROTC
+                    </h1>
+                    <p class="military-subtitle">Training Staff Attendance Management System</p>
+                </div>
+                <div class="col-md-4 text-end">
+                    {% if user.is_authenticated %}
+                        <div class="user-info">
+                            <span class="rank-insignia">{{ user.get_rank_display|slice:":3"|upper }}</span>
+                            <span class="ms-2">{{ user.full_name }}</span>
+                            <small class="d-block text-warning">{{ user.get_role_display }}</small>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg military-nav">
+        <div class="container">
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation" title="Toggle navigation menu">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav">
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'authentication:landing' %}">
+                            <i class="fas fa-home"></i> Home
+                        </a>
+                    </li>
+                    {% if user.is_authenticated %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'authentication:dashboard' %}">
+                            <i class="fas fa-tachometer-alt"></i> Dashboard
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/staff/">
+                            <i class="fas fa-users"></i> Staff
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/attendance/">
+                            <i class="fas fa-clipboard-check"></i> Attendance
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/qrcode/">
+                            <i class="fas fa-qrcode"></i> QR Codes
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/reports/">
+                            <i class="fas fa-chart-bar"></i> Reports
+                        </a>
+                    </li>
+                    {% if user.is_admin %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="/admin/">
+                            <i class="fas fa-cog"></i> Admin
+                        </a>
+                    </li>
+                    {% endif %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'authentication:logout' %}">
+                            <i class="fas fa-sign-out-alt"></i> Logout
+                        </a>
+                    </li>
+                    {% else %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'authentication:login' %}">
+                            <i class="fas fa-sign-in-alt"></i> Login
+                        </a>
+                    </li>
+                    {% endif %}
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Messages -->
+    {% if messages %}
+        <div class="container mt-3">
+            {% for message in messages %}
+                <div class="alert alert-{{ message.tags }} military-alert alert-dismissible fade show" role="alert">
+                    {{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close" title="Close alert"></button>
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+
+    <!-- Main Content -->
+    <main>
+        {% block content %}
+        {% endblock %}
+    </main>
+
+    <!-- Footer -->
+    <footer class="military-footer">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6">
+                    <h5>Mindanao State University - Sultan Naga Dimaporo ROTC Unit</h5>
+                    <p>Mindanao State University - Sultan Naga Dimaporo Campus</p>
+                    <p>Building Discipline, Leadership, and Service</p>
+                </div>
+                <div class="col-md-6 text-end">
+                    <p>&copy; 2026 Mindanao State University - Sultan Naga Dimaporo ROTC Training Staff Attendance Management System</p>
+                    <p>All Rights Reserved</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- jQuery -->
+    <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
+    
+    {% block extra_js %}
+    {% endblock %}
+</body>
+</html>

@@ -1,0 +1,378 @@
+{% extends 'base.html' %}
+
+{% block title %}QR Code Scanner - Mindanao State University - Sultan Naga Dimaporo ROTC Attendance System{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-md-8">
+            <div class="military-card">
+                <div class="card-header">
+                    <h5 class="mb-0">
+                        <i class="fas fa-qrcode"></i> QR Code Scanner
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <!-- Camera View -->
+                    <div id="cameraContainer" class="text-center mb-4">
+                        <video id="video" width="640" height="480" class="hidden"></video>
+                        <canvas id="canvas" width="640" height="480" class="hidden"></canvas>
+                        <div id="cameraPlaceholder" class="camera-placeholder">
+                            <i class="fas fa-camera fa-4x text-muted mb-3"></i>
+                            <h5>Camera Preview</h5>
+                            <p class="text-muted">Click "Start Camera" to begin scanning</p>
+                        </div>
+                    </div>
+                    
+                    <!-- Camera Controls -->
+                    <div class="text-center mb-4">
+                        <button id="startCamera" class="military-btn">
+                            <i class="fas fa-video"></i> Start Camera
+                        </button>
+                        <button id="stopCamera" class="military-btn-secondary hidden" title="Stop camera">
+                            <i class="fas fa-stop"></i> Stop Camera
+                        </button>
+                        <button id="switchCamera" class="military-btn-secondary hidden" title="Switch camera">
+                            <i class="fas fa-sync-alt"></i> Switch Camera
+                        </button>
+                    </div>
+                    
+                    <!-- Manual Input -->
+                    <div class="row">
+                        <div class="col-12">
+                            <h6>Manual QR Code Input</h6>
+                            <div class="input-group">
+                                <input type="text" class="form-control military-form-control" id="manualQRInput" 
+                                       placeholder="Paste QR code data here...">
+                                <button class="btn military-btn" onclick="startCamera()" title="Start camera scanning">
+                                    <i class="fas fa-paper-plane"></i> Submit
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-4">
+            <div class="military-card">
+                <div class="card-header">
+                    <h5 class="mb-0">
+                        <i class="fas fa-info-circle"></i> Scanning Instructions
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <ol>
+                        <li>Click "Start Camera" to activate the scanner</li>
+                        <li>Position the QR code within the camera frame</li>
+                        <li>The scanner will automatically detect and scan the QR code</li>
+                        <li>Wait for confirmation message</li>
+                        <li>For manual input, paste the QR code data and submit</li>
+                    </ol>
+                    
+                    <div class="alert alert-warning military-alert mt-3">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        <strong>Note:</strong> Make sure you have proper authorization to mark attendance.
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Scan History -->
+            <div class="military-card mt-3">
+                <div class="card-header">
+                    <h5 class="mb-0">
+                        <i class="fas fa-history"></i> Recent Scans
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div id="scanHistory">
+                        <p class="text-muted">No scans yet</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Location Permission Modal -->
+    <div class="modal fade" id="locationModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Location Access</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" title="Close location modal"></button>
+                </div>
+                <div class="modal-body">
+                    <p>This app would like to access your location to verify attendance location.</p>
+                    <p>Allow location access for enhanced security?</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn military-btn-secondary" data-bs-dismiss="modal">Deny</button>
+                    <button type="button" class="military-btn" id="allowLocation">Allow</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<!-- HTML5 QR Code Scanner Library -->
+<script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
+
+<script>
+$(document).ready(function() {
+    let html5QrCode = null;
+    let currentStream = null;
+    let scanHistory = [];
+    let locationPermission = false;
+    
+    // Initialize scanner
+    function initializeScanner() {
+        html5QrCode = new Html5Qrcode("reader");
+    }
+    
+    // Start camera
+    $('#startCamera').on('click', function() {
+        startCamera();
+    });
+    
+    // Stop camera
+    $('#stopCamera').on('click', function() {
+        stopCamera();
+    });
+    
+    // Switch camera
+    $('#switchCamera').on('click', function() {
+        switchCamera();
+    });
+    
+    // Manual submission
+    $('#manualSubmit').on('click', function() {
+        const qrData = $('#manualQRInput').val().trim();
+        if (qrData) {
+            processQRCode(qrData);
+            $('#manualQRInput').val('');
+        }
+    });
+    
+    // Allow location
+    $('#allowLocation').on('click', function() {
+        requestLocationPermission();
+        $('#locationModal').modal('hide');
+    });
+    
+    function startCamera() {
+        const config = { 
+            fps: 10, 
+            qrbox: { width: 250, height: 250 },
+            aspectRatio: 1.0
+        };
+        
+        // Try back camera first, then front camera
+        html5QrCode.start(
+            { facingMode: "environment" },
+            config,
+            (decodedText, decodedResult) => {
+                processQRCode(decodedText);
+                // Optional: stop scanning after successful scan
+                // html5QrCode.stop();
+            },
+            (errorMessage) => {
+                // Handle scan error silently
+                console.log(errorMessage);
+            }
+        ).then(() => {
+            updateUI(true);
+        }).catch((err) => {
+            console.log(`Unable to start scanning, error: ${err}`);
+            // Try front camera if back camera fails
+            html5QrCode.start(
+                { facingMode: "user" },
+                config,
+                (decodedText, decodedResult) => {
+                    processQRCode(decodedText);
+                },
+                (errorMessage) => {
+                    console.log(errorMessage);
+                }
+            ).then(() => {
+                updateUI(true);
+            }).catch((err) => {
+                console.log(`Unable to start scanning with front camera, error: ${err}`);
+                showAlert('error', 'Unable to access camera. Please check permissions.');
+            });
+        });
+    }
+    
+    function stopCamera() {
+        if (html5QrCode && html5QrCode.isScanning) {
+            html5QrCode.stop().then(() => {
+                updateUI(false);
+            }).catch((err) => {
+                console.log(`Failed to stop scanning, error: ${err}`);
+            });
+        }
+    }
+    
+    function switchCamera() {
+        if (html5QrCode && html5QrCode.isScanning) {
+            html5QrCode.stop().then(() => {
+                startCamera();
+            }).catch((err) => {
+                console.log(`Failed to switch camera, error: ${err}`);
+            });
+        }
+    }
+    
+    function updateUI(isScanning) {
+        if (isScanning) {
+            $('#startCamera').hide();
+            $('#stopCamera').show();
+            $('#switchCamera').show();
+            $('#cameraPlaceholder').hide();
+            $('#video').show();
+        } else {
+            $('#startCamera').show();
+            $('#stopCamera').hide();
+            $('#switchCamera').hide();
+            $('#cameraPlaceholder').show();
+            $('#video').hide();
+        }
+    }
+    
+    function processQRCode(qrData) {
+        // Get location if permission granted
+        if (locationPermission) {
+            navigator.geolocation.getCurrentPosition(
+                (position) => {
+                    submitQRCode(qrData, position.coords.latitude, position.coords.longitude);
+                },
+                (error) => {
+                    submitQRCode(qrData, null, null);
+                }
+            );
+        } else {
+            submitQRCode(qrData, null, null);
+        }
+    }
+    
+    function submitQRCode(qrData, latitude, longitude) {
+        const data = {
+            qr_data: qrData,
+            latitude: latitude,
+            longitude: longitude
+        };
+        
+        $.ajax({
+            url: '{% url "qrcode:api_scan" %}',
+            method: 'POST',
+            data: data,
+            beforeSend: function(xhr) {
+                xhr.setRequestHeader('X-CSRFToken', $('[name=csrfmiddlewaretoken]').val());
+            },
+            success: function(response) {
+                if (response.success) {
+                    showAlert('success', response.message);
+                    addToScanHistory(response, 'success');
+                } else {
+                    showAlert('error', response.error);
+                    addToScanHistory({ error: response.error }, 'error');
+                }
+            },
+            error: function(xhr) {
+                const errorMsg = xhr.responseJSON ? xhr.responseJSON.error : 'Scan failed';
+                showAlert('error', errorMsg);
+                addToScanHistory({ error: errorMsg }, 'error');
+            }
+        });
+    }
+    
+    function requestLocationPermission() {
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(
+                (position) => {
+                    locationPermission = true;
+                    showAlert('success', 'Location access granted');
+                },
+                (error) => {
+                    locationPermission = false;
+                    showAlert('warning', 'Location access denied');
+                }
+            );
+        } else {
+            showAlert('warning', 'Geolocation is not supported by this browser');
+        }
+    }
+    
+    function addToScanHistory(data, status) {
+        const timestamp = new Date().toLocaleString();
+        const statusClass = status === 'success' ? 'success' : 'danger';
+        const statusIcon = status === 'success' ? 'check-circle' : 'times-circle';
+        
+        const historyItem = `
+            <div class="alert alert-${statusClass} alert-dismissible fade show" role="alert">
+                <i class="fas fa-${statusIcon}"></i>
+                <strong>${timestamp}</strong><br>
+                ${data.session || data.error}
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+        `;
+        
+        $('#scanHistory').prepend(historyItem);
+        
+        // Keep only last 5 scans
+        const alerts = $('#scanHistory .alert');
+        if (alerts.length > 5) {
+            alerts.slice(5).remove();
+        }
+    }
+    
+    function showAlert(type, message) {
+        $('.alert').remove();
+        const alertClass = type === 'error' ? 'alert-danger' : type === 'warning' ? 'alert-warning' : 'alert-success';
+        const alertHtml = `
+            <div class="alert ${alertClass} military-alert alert-dismissible fade show" role="alert">
+                ${message}
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+        `;
+        $('.container').prepend(alertHtml);
+    }
+    
+    // Initialize on page load
+    initializeScanner();
+    
+    // Show location modal after a delay
+    setTimeout(() => {
+        $('#locationModal').modal('show');
+    }, 2000);
+});
+</script>
+
+<style>
+.hidden {
+    display: none !important;
+}
+
+.camera-placeholder {
+    background: #f8f9fa;
+    border: 2px dashed #dee2e6;
+    border-radius: 8px;
+    padding: 40px;
+    margin: 20px 0;
+}
+
+#reader {
+    border: 2px solid var(--army-green);
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+#video {
+    border-radius: 8px;
+    width: 100%;
+    max-width: 640px;
+    height: auto;
+}
+</style>
+{% endblock %}

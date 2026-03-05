@@ -1,0 +1,131 @@
+{% extends "base.html" %}
+{% block title %}{{ session.title }} — Attendance{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-4">
+  <nav aria-label="breadcrumb" class="mb-3">
+    <ol class="breadcrumb">
+      <li class="breadcrumb-item"><a href="{% url 'attendance:dashboard' %}">Attendance</a></li>
+      <li class="breadcrumb-item active">{{ session.title }}</li>
+    </ol>
+  </nav>
+
+  <!-- Session Info -->
+  <div class="card military-card shadow-sm mb-4">
+    <div class="card-header bg-dark text-white d-flex justify-content-between align-items-center">
+      <span><i class="fas fa-chalkboard-teacher me-2"></i>{{ session.title }}</span>
+      <span class="badge {% if session.status == 'ongoing' %}bg-success{% elif session.status == 'completed' %}bg-secondary{% elif session.status == 'cancelled' %}bg-danger{% else %}bg-primary{% endif %}">
+        {{ session.get_status_display }}
+      </span>
+    </div>
+    <div class="card-body">
+      <div class="row g-3">
+        <div class="col-sm-6 col-md-3">
+          <small class="text-muted d-block">Type</small>
+          <strong>{{ session.get_session_type_display }}</strong>
+        </div>
+        <div class="col-sm-6 col-md-3">
+          <small class="text-muted d-block">Date</small>
+          <strong>{{ session.date|date:"N j, Y" }}</strong>
+        </div>
+        <div class="col-sm-6 col-md-3">
+          <small class="text-muted d-block">Time</small>
+          <strong>{{ session.start_time|time:"g:i A" }} – {{ session.end_time|time:"g:i A" }}</strong>
+        </div>
+        <div class="col-sm-6 col-md-3">
+          <small class="text-muted d-block">Location</small>
+          <strong>{{ session.location }}</strong>
+        </div>
+        {% if session.instructor %}
+        <div class="col-sm-6 col-md-3">
+          <small class="text-muted d-block">Instructor</small>
+          <strong>{{ session.instructor.get_rank_display }} {{ session.instructor.full_name }}</strong>
+        </div>
+        {% endif %}
+        <div class="col-sm-6 col-md-3">
+          <small class="text-muted d-block">Max Participants</small>
+          <strong>{{ session.max_participants }}</strong>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Attendance Summary Stats -->
+  {% with total=attendance_records.count %}
+  {% if total > 0 %}
+  <div class="row g-3 mb-4">
+    {% with present=attendance_records|dictsort:"status" %}
+    <div class="col-6 col-md-2">
+      <div class="card border-success text-center p-2">
+        <div class="fw-bold text-success fs-4">{{ attendance_records|length }}</div>
+        <small class="text-muted">Total</small>
+      </div>
+    </div>
+    {% endwith %}
+  </div>
+  {% endif %}
+  {% endwith %}
+
+  <!-- Attendance Table -->
+  <div class="card military-card shadow-sm">
+    <div class="card-header bg-dark text-white d-flex justify-content-between align-items-center">
+      <span><i class="fas fa-list me-2"></i>Attendance Records ({{ attendance_records.count }})</span>
+    </div>
+    <div class="card-body p-0">
+      {% if attendance_records %}
+      <div class="table-responsive">
+        <table class="table table-hover mb-0">
+          <thead class="table-dark">
+            <tr>
+              <th>#</th>
+              <th>Staff Name</th>
+              <th>Rank</th>
+              <th>Status</th>
+              <th>Check-In</th>
+              <th>QR Scanned</th>
+              <th>Location Verified</th>
+              <th>Notes</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for record in attendance_records %}
+            <tr>
+              <td>{{ forloop.counter }}</td>
+              <td><strong>{{ record.staff.full_name }}</strong></td>
+              <td>{{ record.staff.get_rank_display }}</td>
+              <td>
+                <span class="badge {% if record.status == 'present' %}bg-success{% elif record.status == 'late' %}bg-warning text-dark{% elif record.status == 'absent' %}bg-danger{% elif record.status == 'excused' %}bg-info{% else %}bg-secondary{% endif %}">
+                  {{ record.get_status_display }}
+                </span>
+              </td>
+              <td>{% if record.check_in_time %}{{ record.check_in_time|time:"g:i A" }}{% else %}<span class="text-muted">—</span>{% endif %}</td>
+              <td>
+                {% if record.qr_code_scanned %}
+                  <i class="fas fa-check-circle text-success"></i>
+                {% else %}
+                  <i class="fas fa-times-circle text-muted"></i>
+                {% endif %}
+              </td>
+              <td>
+                {% if record.location_verified %}
+                  <i class="fas fa-map-marker-alt text-success"></i>
+                {% else %}
+                  <i class="fas fa-map-marker-alt text-muted"></i>
+                {% endif %}
+              </td>
+              <td><small class="text-muted">{{ record.notes|default:"—" }}</small></td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+      {% else %}
+      <div class="text-center py-5 text-muted">
+        <i class="fas fa-clipboard fa-3x mb-3 opacity-25"></i>
+        <p class="mb-0">No attendance records for this session yet.</p>
+      </div>
+      {% endif %}
+    </div>
+  </div>
+</div>
+{% endblock %}

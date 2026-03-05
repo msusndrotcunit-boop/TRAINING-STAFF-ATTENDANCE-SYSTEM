@@ -1,0 +1,526 @@
+{% extends 'base.html' %}
+
+{% block title %}Login - Mindanao State University - Sultan Naga Dimaporo ROTC Attendance System{% endblock %}
+
+{% block extra_css %}
+<style>
+    .login-split-container {
+        min-height: calc(100vh - 160px);
+        display: flex;
+        background: linear-gradient(135deg, #1a1f2e 0%, #0d1117 100%);
+    }
+
+    /* Left Panel - Branding */
+    .login-branding-panel {
+        flex: 1;
+        background: linear-gradient(135deg, var(--army-dark-green) 0%, #1a2a1a 50%, #0d1a0d 100%);
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        padding: 3rem;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .login-branding-panel::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><text x="10" y="20" fill="rgba(255,215,0,0.03)" font-size="8" font-family="monospace">ROTC</text><text x="30" y="40" fill="rgba(255,215,0,0.03)" font-size="8" font-family="monospace">MSU</text><text x="50" y="60" fill="rgba(255,215,0,0.03)" font-size="8" font-family="monospace">SND</text><text x="20" y="80" fill="rgba(255,215,0,0.03)" font-size="8" font-family="monospace">ARMY</text></svg>');
+        background-size: 200px 200px;
+        opacity: 0.5;
+    }
+
+    .login-branding-content {
+        position: relative;
+        z-index: 1;
+        text-align: center;
+        color: white;
+    }
+
+    .login-logo-container {
+        width: 120px;
+        height: 120px;
+        background: rgba(255, 215, 0, 0.1);
+        border: 3px solid var(--army-gold);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 2rem;
+        box-shadow: 0 0 40px rgba(255, 215, 0, 0.2);
+    }
+
+    .login-logo-container i {
+        font-size: 3.5rem;
+        color: var(--army-gold);
+    }
+
+    .login-system-name {
+        font-family: 'Russo One', sans-serif;
+        font-size: 2.5rem;
+        font-weight: 700;
+        color: white;
+        margin-bottom: 0.5rem;
+        text-transform: uppercase;
+        letter-spacing: 2px;
+    }
+
+    .login-system-subtitle {
+        font-size: 1rem;
+        color: rgba(255, 255, 255, 0.7);
+        margin-bottom: 2rem;
+        max-width: 300px;
+    }
+
+    .login-tagline {
+        font-size: 0.95rem;
+        color: rgba(255, 255, 255, 0.6);
+        max-width: 280px;
+        line-height: 1.6;
+    }
+
+    /* Right Panel - Form */
+    .login-form-panel {
+        flex: 1;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 2rem;
+        background: linear-gradient(135deg, #f5f7fa 0%, #e4e8f0 100%);
+    }
+
+    .login-card {
+        background: white;
+        border-radius: 20px;
+        padding: 3rem;
+        width: 100%;
+        max-width: 450px;
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+    }
+
+    .login-header {
+        margin-bottom: 2rem;
+    }
+
+    .login-header h2 {
+        font-size: 1.75rem;
+        font-weight: 700;
+        color: #1a1f2e;
+        margin-bottom: 0.5rem;
+    }
+
+    .login-header p {
+        color: #6c757d;
+        font-size: 0.95rem;
+    }
+
+    .form-group {
+        margin-bottom: 1.5rem;
+    }
+
+    .form-label {
+        font-size: 0.875rem;
+        font-weight: 600;
+        color: #374151;
+        margin-bottom: 0.5rem;
+        display: block;
+    }
+
+    .input-wrapper {
+        position: relative;
+    }
+
+    .input-wrapper i {
+        position: absolute;
+        left: 1rem;
+        top: 50%;
+        transform: translateY(-50%);
+        color: #9ca3af;
+        font-size: 1rem;
+    }
+
+    .form-control-modern {
+        width: 100%;
+        padding: 0.875rem 1rem 0.875rem 2.75rem;
+        border: 2px solid #e5e7eb;
+        border-radius: 12px;
+        font-size: 0.95rem;
+        transition: all 0.3s ease;
+        background: #fafafa;
+    }
+
+    .form-control-modern:focus {
+        outline: none;
+        border-color: var(--army-green);
+        background: white;
+        box-shadow: 0 0 0 4px rgba(75, 83, 32, 0.1);
+    }
+
+    .password-toggle {
+        position: absolute;
+        right: 1rem;
+        top: 50%;
+        transform: translateY(-50%);
+        background: none;
+        border: none;
+        color: #9ca3af;
+        cursor: pointer;
+        font-size: 1rem;
+        padding: 0.25rem;
+    }
+
+    .password-toggle:hover {
+        color: var(--army-green);
+    }
+
+    .form-options {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 1.5rem;
+    }
+
+    .remember-me {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        font-size: 0.875rem;
+        color: #6b7280;
+        cursor: pointer;
+    }
+
+    .remember-me input[type="checkbox"] {
+        width: 18px;
+        height: 18px;
+        border: 2px solid #d1d5db;
+        border-radius: 4px;
+        cursor: pointer;
+        accent-color: var(--army-green);
+    }
+
+    .forgot-password {
+        font-size: 0.875rem;
+        color: var(--army-green);
+        text-decoration: none;
+        font-weight: 500;
+    }
+
+    .forgot-password:hover {
+        color: var(--army-dark-green);
+        text-decoration: underline;
+    }
+
+    .btn-signin {
+        width: 100%;
+        padding: 1rem;
+        background: linear-gradient(135deg, var(--army-green) 0%, var(--army-dark-green) 100%);
+        color: white;
+        border: none;
+        border-radius: 12px;
+        font-size: 1rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+        box-shadow: 0 4px 15px rgba(75, 83, 32, 0.3);
+    }
+
+    .btn-signin:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(75, 83, 32, 0.4);
+    }
+
+    .login-divider {
+        display: flex;
+        align-items: center;
+        margin: 1.5rem 0;
+        color: #9ca3af;
+        font-size: 0.875rem;
+    }
+
+    .login-divider::before,
+    .login-divider::after {
+        content: '';
+        flex: 1;
+        height: 1px;
+        background: #e5e7eb;
+    }
+
+    .login-divider span {
+        padding: 0 1rem;
+    }
+
+    .login-alt-options {
+        text-align: center;
+    }
+
+    .btn-alt {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0.75rem 1.5rem;
+        color: var(--army-green);
+        text-decoration: none;
+        font-size: 0.9rem;
+        font-weight: 500;
+        border-radius: 8px;
+        transition: all 0.3s ease;
+    }
+
+    .btn-alt:hover {
+        background: rgba(75, 83, 32, 0.1);
+    }
+
+    /* Role Selector */
+    .role-selector {
+        display: flex;
+        gap: 0.5rem;
+        margin-bottom: 1.5rem;
+        background: #f3f4f6;
+        padding: 0.375rem;
+        border-radius: 12px;
+    }
+
+    .role-btn {
+        flex: 1;
+        padding: 0.625rem 1rem;
+        border: none;
+        background: transparent;
+        color: #6b7280;
+        font-size: 0.875rem;
+        font-weight: 500;
+        border-radius: 8px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+
+    .role-btn.active {
+        background: white;
+        color: var(--army-green);
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .role-btn:hover:not(.active) {
+        color: #374151;
+    }
+
+    /* Alert Messages */
+    .login-alert {
+        padding: 1rem;
+        border-radius: 10px;
+        margin-bottom: 1.5rem;
+        font-size: 0.875rem;
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+    }
+
+    .login-alert-error {
+        background: #fef2f2;
+        color: #dc2626;
+        border: 1px solid #fecaca;
+    }
+
+    .login-alert-success {
+        background: #f0fdf4;
+        color: #16a34a;
+        border: 1px solid #bbf7d0;
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+        .login-split-container {
+            flex-direction: column;
+        }
+
+        .login-branding-panel {
+            padding: 2rem 1.5rem;
+            min-height: 200px;
+        }
+
+        .login-logo-container {
+            width: 80px;
+            height: 80px;
+        }
+
+        .login-logo-container i {
+            font-size: 2.5rem;
+        }
+
+        .login-system-name {
+            font-size: 1.75rem;
+        }
+
+        .login-card {
+            padding: 2rem 1.5rem;
+            margin: 1rem;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="login-split-container">
+    <!-- Left Panel - Branding -->
+    <div class="login-branding-panel">
+        <div class="login-branding-content">
+            <div class="login-logo-container">
+                <i class="fas fa-shield-alt"></i>
+            </div>
+            <h1 class="login-system-name">MSU-SND ROTC</h1>
+            <p class="login-system-subtitle">Training Staff Attendance Management System</p>
+            <p class="login-tagline">Sign in to manage your ROTC profile, attendance, and training records with military precision.</p>
+        </div>
+    </div>
+
+    <!-- Right Panel - Form -->
+    <div class="login-form-panel">
+        <div class="login-card">
+            <div class="login-header">
+                <h2>Sign In</h2>
+                <p>Access your ROTC account</p>
+            </div>
+
+            <!-- Messages -->
+            {% if messages %}
+                {% for message in messages %}
+                    <div class="login-alert {% if message.tags == 'error' %}login-alert-error{% else %}login-alert-success{% endif %}">
+                        <i class="fas {% if message.tags == 'error' %}fa-exclamation-circle{% else %}fa-check-circle{% endif %}"></i>
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            {% endif %}
+
+            <form id="loginForm" method="post" action="{% url 'authentication:login' %}">
+                {% csrf_token %}
+
+                <!-- Role Selector -->
+                <div class="role-selector">
+                    <button type="button" class="role-btn active" data-role="staff" onclick="selectRole('staff')">
+                        <i class="fas fa-user"></i> Staff
+                    </button>
+                    <button type="button" class="role-btn" data-role="admin" onclick="selectRole('admin')">
+                        <i class="fas fa-user-shield"></i> Administrator
+                    </button>
+                </div>
+                <input type="hidden" name="user_type" id="userType" value="staff">
+
+                <!-- Email/Username Field -->
+                <div class="form-group">
+                    <label class="form-label" for="username">Username or Email</label>
+                    <div class="input-wrapper">
+                        <i class="fas fa-user"></i>
+                        <input type="text" class="form-control-modern" id="username" name="username" 
+                               placeholder="Enter your username or email" required autocomplete="username">
+                    </div>
+                </div>
+
+                <!-- Password Field -->
+                <div class="form-group">
+                    <label class="form-label" for="password">Password</label>
+                    <div class="input-wrapper">
+                        <i class="fas fa-lock"></i>
+                        <input type="password" class="form-control-modern" id="password" name="password" 
+                               placeholder="Enter your password" required autocomplete="current-password">
+                        <button type="button" class="password-toggle" onclick="togglePassword()" title="Toggle password visibility">
+                            <i class="fas fa-eye" id="toggleIcon"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Options -->
+                <div class="form-options">
+                    <label class="remember-me">
+                        <input type="checkbox" name="remember" id="remember">
+                        <span>Remember me</span>
+                    </label>
+                    <a href="#" class="forgot-password">Forgot Password?</a>
+                </div>
+
+                <!-- Submit Button -->
+                <button type="submit" class="btn-signin">
+                    <i class="fas fa-sign-in-alt"></i>
+                    Sign In
+                </button>
+
+                <!-- Divider -->
+                <div class="login-divider">
+                    <span>New to ROTC MIS?</span>
+                </div>
+
+                <!-- Alternative Options -->
+                <div class="login-alt-options">
+                    <a href="{% url 'authentication:staff_signup' %}" class="btn-alt">
+                        <i class="fas fa-user-plus"></i>
+                        Create New Account
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    function togglePassword() {
+        const passwordInput = document.getElementById('password');
+        const toggleIcon = document.getElementById('toggleIcon');
+        
+        if (passwordInput.type === 'password') {
+            passwordInput.type = 'text';
+            toggleIcon.classList.remove('fa-eye');
+            toggleIcon.classList.add('fa-eye-slash');
+        } else {
+            passwordInput.type = 'password';
+            toggleIcon.classList.remove('fa-eye-slash');
+            toggleIcon.classList.add('fa-eye');
+        }
+    }
+
+    function selectRole(role) {
+        document.getElementById('userType').value = role;
+        document.querySelectorAll('.role-btn').forEach(btn => {
+            btn.classList.remove('active');
+            if (btn.dataset.role === role) {
+                btn.classList.add('active');
+            }
+        });
+    }
+
+    document.getElementById('loginForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        const formData = new FormData(this);
+        
+        fetch('{% url "authentication:login" %}', {
+            method: 'POST',
+            body: formData,
+            headers: {
+                'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                window.location.href = data.redirect;
+            } else {
+                const alertDiv = document.createElement('div');
+                alertDiv.className = 'login-alert login-alert-error';
+                alertDiv.innerHTML = '<i class="fas fa-exclamation-circle"></i> ' + data.error;
+                const existingAlert = document.querySelector('.login-alert');
+                if (existingAlert) existingAlert.remove();
+                document.querySelector('.login-header').after(alertDiv);
+            }
+        })
+        .catch(error => console.error('Error:', error));
+    });
+</script>
+{% endblock %}

@@ -1,0 +1,60 @@
+{% extends 'base.html' %}
+
+{% block title %}Dashboard Redirect - Mindanao State University - Sultan Naga Dimaporo ROTC Attendance System{% endblock %}
+
+{% block content %}
+<div class="container min-vh-100 d-flex align-items-center justify-content-center">
+    <div class="military-card text-center p-5">
+        <div class="mb-4">
+            <i class="fas fa-spinner fa-spin fa-3x text-success"></i>
+        </div>
+        <h3 class="military-title mb-3">Redirecting to Dashboard</h3>
+        <p class="text-muted">Please wait while we redirect you to your dashboard...</p>
+        
+        <div class="mt-4">
+            <div class="progress" style="height: 6px;">
+                <div class="progress-bar military-progress-bar" role="progressbar" style="width: 0%"></div>
+            </div>
+        </div>
+        
+        <div class="mt-3">
+            <small class="text-muted">
+                Welcome, {{ user.full_name }} ({{ user.get_rank_display }})
+            </small>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+$(document).ready(function() {
+    // Animate progress bar
+    let progress = 0;
+    const progressBar = $('.military-progress-bar');
+    
+    const interval = setInterval(function() {
+        progress += 10;
+        progressBar.css('width', progress + '%');
+        
+        if (progress >= 100) {
+            clearInterval(interval);
+            
+            // Redirect based on user role
+            const userRole = '{{ user.role }}';
+            if (userRole === 'admin') {
+                window.location.href = '/admin/';
+            } else {
+                window.location.href = '/dashboard/';
+            }
+        }
+    }, 200);
+});
+</script>
+
+<style>
+.military-progress-bar {
+    background: linear-gradient(90deg, var(--army-green) 0%, var(--army-dark-green) 100%);
+}
+</style>
+{% endblock %}

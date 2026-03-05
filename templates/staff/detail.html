@@ -1,0 +1,156 @@
+{% extends "base.html" %}
+{% block title %}{{ staff.user.full_name }} — Staff Detail{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-4">
+  <nav aria-label="breadcrumb" class="mb-3">
+    <ol class="breadcrumb">
+      <li class="breadcrumb-item"><a href="{% url 'staff:list' %}">Staff</a></li>
+      <li class="breadcrumb-item active">{{ staff.user.full_name }}</li>
+    </ol>
+  </nav>
+
+  <div class="row g-4">
+    <!-- Profile Card -->
+    <div class="col-md-4">
+      <div class="card military-card shadow-sm h-100">
+        <div class="card-body text-center py-4">
+          {% if staff.user.profile_picture %}
+            <img src="{{ staff.user.profile_picture.url }}" class="rounded-circle mb-3" width="100" height="100" alt="{{ staff.user.full_name }}">
+          {% else %}
+            <div class="rounded-circle bg-secondary d-flex align-items-center justify-content-center text-white mx-auto mb-3 staff-avatar-placeholder">
+              {{ staff.user.full_name|first|upper }}
+            </div>
+          {% endif %}
+          <h4 class="fw-bold mb-1">{{ staff.user.full_name }}</h4>
+          <p class="text-muted mb-2">{{ staff.user.get_rank_display }}</p>
+          <span class="badge {% if staff.status == 'active' %}bg-success{% elif staff.status == 'on_leave' %}bg-warning text-dark{% else %}bg-secondary{% endif %} mb-3">
+            {{ staff.get_status_display }}
+          </span>
+          <hr>
+          <div class="text-start small">
+            <div class="mb-2"><i class="fas fa-id-badge me-2 text-muted"></i><strong>Service No.:</strong> {{ staff.user.service_number }}</div>
+            <div class="mb-2"><i class="fas fa-envelope me-2 text-muted"></i><strong>Email:</strong> {{ staff.user.email }}</div>
+            {% if staff.user.contact_number %}
+            <div class="mb-2"><i class="fas fa-phone me-2 text-muted"></i><strong>Contact:</strong> {{ staff.user.contact_number }}</div>
+            {% endif %}
+            <div class="mb-2"><i class="fas fa-star me-2 text-muted"></i><strong>Specialization:</strong> {{ staff.get_specialization_display }}</div>
+            <div class="mb-2"><i class="fas fa-calendar me-2 text-muted"></i><strong>Assigned:</strong> {{ staff.date_assigned|date:"M d, Y" }}</div>
+            {% if staff.blood_type %}
+            <div class="mb-2"><i class="fas fa-tint me-2 text-muted"></i><strong>Blood Type:</strong> {{ staff.blood_type }}</div>
+            {% endif %}
+          </div>
+          {% if staff.bio %}
+          <hr>
+          <p class="small text-muted mb-0">{{ staff.bio }}</p>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+
+    <!-- Details Right Column -->
+    <div class="col-md-8">
+      <!-- Qualifications -->
+      <div class="card military-card shadow-sm mb-4">
+        <div class="card-header bg-dark text-white"><i class="fas fa-certificate me-2"></i>Qualifications</div>
+        <div class="card-body p-0">
+          {% if qualifications %}
+          <div class="table-responsive">
+            <table class="table table-hover mb-0 small">
+              <thead class="table-dark">
+                <tr>
+                  <th>Qualification</th>
+                  <th>Issuing Authority</th>
+                  <th>Date Obtained</th>
+                  <th>Expires</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for q in qualifications %}
+                <tr>
+                  <td>{{ q.qualification_name }}</td>
+                  <td>{{ q.issuing_authority }}</td>
+                  <td>{{ q.date_obtained|date:"M d, Y" }}</td>
+                  <td>{% if q.expiry_date %}{{ q.expiry_date|date:"M d, Y" }}{% else %}<span class="text-muted">No expiry</span>{% endif %}</td>
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+          {% else %}
+          <p class="text-muted text-center py-3 mb-0">No qualifications on record.</p>
+          {% endif %}
+        </div>
+      </div>
+
+      <!-- Performance Records -->
+      <div class="card military-card shadow-sm mb-4">
+        <div class="card-header bg-dark text-white"><i class="fas fa-chart-bar me-2"></i>Performance Records</div>
+        <div class="card-body p-0">
+          {% if performance_records %}
+          <div class="table-responsive">
+            <table class="table table-hover mb-0 small">
+              <thead class="table-dark">
+                <tr>
+                  <th>Period</th>
+                  <th>Overall</th>
+                  <th>Leadership</th>
+                  <th>Technical</th>
+                  <th>Discipline</th>
+                  <th>Date</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for p in performance_records %}
+                <tr>
+                  <td>{{ p.evaluation_period }}</td>
+                  <td><strong>{{ p.overall_rating }}</strong></td>
+                  <td>{{ p.leadership_rating }}</td>
+                  <td>{{ p.technical_skills_rating }}</td>
+                  <td>{{ p.discipline_rating }}</td>
+                  <td>{{ p.evaluation_date|date:"M d, Y" }}</td>
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+          {% else %}
+          <p class="text-muted text-center py-3 mb-0">No performance records on file.</p>
+          {% endif %}
+        </div>
+      </div>
+
+      <!-- Upcoming Schedules -->
+      <div class="card military-card shadow-sm">
+        <div class="card-header bg-dark text-white"><i class="fas fa-calendar-alt me-2"></i>Upcoming Schedules</div>
+        <div class="card-body p-0">
+          {% if schedules %}
+          <div class="table-responsive">
+            <table class="table table-hover mb-0 small">
+              <thead class="table-dark">
+                <tr>
+                  <th>Date</th>
+                  <th>Shift</th>
+                  <th>Location</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for s in schedules %}
+                <tr>
+                  <td>{{ s.date|date:"M d, Y" }}</td>
+                  <td>{{ s.get_shift_display }}</td>
+                  <td>{{ s.duty_location }}</td>
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+          {% else %}
+          <p class="text-muted text-center py-3 mb-0">No upcoming schedules.</p>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

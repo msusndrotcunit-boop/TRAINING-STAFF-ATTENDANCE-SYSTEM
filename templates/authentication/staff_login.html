@@ -1,0 +1,446 @@
+{% extends 'base.html' %}
+
+{% block title %}Staff Login - Mindanao State University - Sultan Naga Dimaporo ROTC Attendance System{% endblock %}
+
+{% block content %}
+<div class="container-fluid min-vh-100">
+    <div class="row min-vh-100">
+        <!-- Left Panel - Login Form -->
+        <div class="col-lg-6 d-flex align-items-center justify-content-center">
+            <div class="login-container">
+                <div class="military-card shadow-lg">
+                    <div class="card-header text-center border-0 pb-0">
+                        <div class="mb-4">
+                            <i class="fas fa-user-shield fa-3x text-success"></i>
+                        </div>
+                        <h3 class="military-title">STAFF LOGIN</h3>
+                        <p class="text-muted">Mindanao State University - Sultan Naga Dimaporo ROTC Unit Personnel</p>
+                    </div>
+                    <div class="card-body pt-0">
+                        <form method="post" id="staffLoginForm">
+                            {% csrf_token %}
+                            <input type="hidden" name="user_type" value="staff">
+                            
+                            <div class="mb-4">
+                                <label for="email" class="form-label">
+                                    <i class="fas fa-envelope"></i> Email Address
+                                </label>
+                                <div class="input-group">
+                                    <span class="input-group-text military-input-group">
+                                        <i class="fas fa-envelope"></i>
+                                    </span>
+                                    <input type="email" class="form-control military-form-control" id="email" 
+                                           name="email" placeholder="Enter your email" required>
+                                </div>
+                            </div>
+                            
+                            <div class="mb-4">
+                                <label for="password" class="form-label">
+                                    <i class="fas fa-lock"></i> Password
+                                </label>
+                                <div class="input-group">
+                                    <span class="input-group-text military-input-group">
+                                        <i class="fas fa-lock"></i>
+                                    </span>
+                                    <input type="password" class="form-control military-form-control" id="password" 
+                                           name="password" placeholder="Enter your password" required>
+                                    <button class="btn btn-outline-secondary" type="button" id="togglePassword" title="Toggle password visibility">
+                                        <i class="fas fa-eye"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            
+                            <div class="mb-4">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="rememberMe" name="remember_me">
+                                    <label class="form-check-label" for="rememberMe">
+                                        Remember me on this device
+                                    </label>
+                                </div>
+                            </div>
+                            
+                            <div class="d-grid gap-2 mb-4">
+                                <button type="submit" class="military-btn btn-lg">
+                                    <i class="fas fa-sign-in-alt"></i> Login as Staff
+                                </button>
+                            </div>
+                            
+                            <div class="text-center">
+                                <small class="text-muted">
+                                    <i class="fas fa-info-circle"></i>
+                                    For training staff and instructors only
+                                </small>
+                            </div>
+                        </form>
+                        
+                        <hr class="my-4">
+                        
+                        <div class="text-center">
+                            <p class="mb-2">Need access?</p>
+                            <a href="#" class="military-link" onclick="showRequestAccess()">
+                                <i class="fas fa-user-plus"></i> Request Account Access
+                            </a>
+                        </div>
+                        
+                        <div class="text-center mt-3">
+                            <a href="{% url 'authentication:staff_signup' %}" class="military-link">
+                                <i class="fas fa-user-plus"></i> New Staff? Register Here
+                            </a>
+                        </div>
+                        
+                        <div class="text-center mt-3">
+                            <a href="{% url 'authentication:admin_login' %}" class="military-link">
+                                <i class="fas fa-user-shield"></i> Administrator Login
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Quick Links -->
+                <div class="mt-4 text-center">
+                    <div class="quick-links">
+                        <a href="#" class="military-link me-3" onclick="showHelp()">
+                            <i class="fas fa-question-circle"></i> Help
+                        </a>
+                        <a href="#" class="military-link me-3" onclick="showSystemInfo()">
+                            <i class="fas fa-info-circle"></i> System Info
+                        </a>
+                        <a href="#" class="military-link" onclick="showContact()">
+                            <i class="fas fa-phone"></i> Contact
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Right Panel - Information -->
+        <div class="col-lg-6 d-none d-lg-flex align-items-center justify-content-center bg-military">
+            <div class="info-panel text-white text-center p-5">
+                <div class="mb-5">
+                    <i class="fas fa-shield-alt fa-5x text-warning mb-4"></i>
+                    <h2 class="military-title">Welcome Back</h2>
+                    <p class="lead">Mindanao State University - Sultan Naga Dimaporo ROTC Attendance Management System</p>
+                </div>
+                
+                <div class="info-features mb-5">
+                    <div class="feature-item mb-3">
+                        <i class="fas fa-qrcode fa-2x text-success"></i>
+                        <h5>Quick QR Scanning</h5>
+                        <p>Mark attendance instantly with QR code technology</p>
+                    </div>
+                    <div class="feature-item mb-3">
+                        <i class="fas fa-calendar-check fa-2x text-success"></i>
+                        <h5>View Schedule</h5>
+                        <p>Access your training sessions and assignments</p>
+                    </div>
+                    <div class="feature-item mb-3">
+                        <i class="fas fa-chart-line fa-2x text-success"></i>
+                        <h5>Track Performance</h5>
+                        <p>Monitor your attendance and training records</p>
+                    </div>
+                </div>
+                
+                <div class="system-status">
+                    <div class="status-item">
+                        <i class="fas fa-check-circle text-success"></i>
+                        <span>System Operational</span>
+                    </div>
+                    <div class="status-item">
+                        <i class="fas fa-users text-info"></i>
+                        <span id="activeUsers">45 Active Users</span>
+                    </div>
+                    <div class="status-item">
+                        <i class="fas fa-clock text-warning"></i>
+                        <span id="currentTime"></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Request Access Modal -->
+<div class="modal fade" id="requestAccessModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Request Account Access</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" title="Close modal"></button>
+            </div>
+            <div class="modal-body">
+                <form id="requestAccessForm">
+                    <div class="mb-3">
+                        <label for="fullName" class="form-label">Full Name</label>
+                        <input type="text" class="form-control military-form-control" id="fullName" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="requestEmail" class="form-label">Email Address</label>
+                        <input type="email" class="form-control military-form-control" id="requestEmail" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="serviceNumber" class="form-label">Service Number</label>
+                        <input type="text" class="form-control military-form-control" id="serviceNumber" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="rank" class="form-label">Rank</label>
+                        <select class="form-select military-form-control" id="rank" required>
+                            <option value="">Select Rank</option>
+                            <option value="col">Colonel</option>
+                            <option value="ltc">Lieutenant Colonel</option>
+                            <option value="maj">Major</option>
+                            <option value="cpt">Captain</option>
+                            <option value="1lt">First Lieutenant</option>
+                            <option value="2lt">Second Lieutenant</option>
+                            <option value="csm">Command Sergeant Major</option>
+                            <option value="sgm">Sergeant Major</option>
+                            <option value="msg">Master Sergeant</option>
+                            <option value="ssg">Staff Sergeant</option>
+                            <option value="sgt">Sergeant</option>
+                            <option value="cpl">Corporal</option>
+                            <option value="pfc">Private First Class</option>
+                            <option value="pvt">Private</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="department" class="form-label">Department/Specialization</label>
+                        <input type="text" class="form-control military-form-control" id="department" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="reason" class="form-label">Reason for Access</label>
+                        <textarea class="form-control military-form-control" id="reason" rows="3" required></textarea>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="military-btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" class="military-btn" onclick="submitAccessRequest()" title="Submit access request">Submit Request</button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+$(document).ready(function() {
+    // Update current time
+    function updateTime() {
+        const now = new Date();
+        $('#currentTime').text(now.toLocaleString());
+    }
+    updateTime();
+    setInterval(updateTime, 1000);
+    
+    // Simulate active users
+    function updateActiveUsers() {
+        const users = Math.floor(Math.random() * 20) + 35;
+        $('#activeUsers').text(users + ' Active Users');
+    }
+    setInterval(updateActiveUsers, 30000);
+    
+    // Toggle password visibility
+    $('#togglePassword').on('click', function() {
+        const passwordField = $('#password');
+        const icon = $(this).find('i');
+        
+        if (passwordField.attr('type') === 'password') {
+            passwordField.attr('type', 'text');
+            icon.removeClass('fa-eye').addClass('fa-eye-slash');
+        } else {
+            passwordField.attr('type', 'password');
+            icon.removeClass('fa-eye-slash').addClass('fa-eye');
+        }
+    });
+    
+    // Staff login form submission
+    $('#staffLoginForm').on('submit', function(e) {
+        e.preventDefault();
+        
+        var formData = $(this).serialize();
+        var submitBtn = $(this).find('button[type="submit"]');
+        var originalText = submitBtn.html();
+        
+        submitBtn.html('<i class="fas fa-spinner fa-spin"></i> Authenticating...').prop('disabled', true);
+        
+        $.ajax({
+            url: '{% url "authentication:api_login" %}',
+            method: 'POST',
+            data: formData,
+            success: function(response) {
+                if (response.success) {
+                    // Store token if using API
+                    if (response.token) {
+                        localStorage.setItem('authToken', response.token);
+                    }
+                    // Redirect to staff dashboard
+                    window.location.href = '/dashboard/';
+                } else {
+                    showAlert('error', response.error || 'Login failed. Please check your credentials.');
+                }
+            },
+            error: function(xhr) {
+                var errorMsg = 'Login failed. Please check your credentials.';
+                if (xhr.responseJSON && xhr.responseJSON.error) {
+                    errorMsg = xhr.responseJSON.error;
+                }
+                showAlert('error', errorMsg);
+            },
+            complete: function() {
+                submitBtn.html(originalText).prop('disabled', false);
+            }
+        });
+    });
+    
+    // Auto-focus on email field
+    $('#email').focus();
+});
+
+window.showRequestAccess = function() {
+    $('#requestAccessModal').modal('show');
+};
+
+window.submitAccessRequest = function() {
+    const formData = {
+        full_name: $('#fullName').val(),
+        email: $('#requestEmail').val(),
+        service_number: $('#serviceNumber').val(),
+        rank: $('#rank').val(),
+        department: $('#department').val(),
+        reason: $('#reason').val()
+    };
+    
+    // Validate form
+    if (!formData.full_name || !formData.email || !formData.service_number || !formData.rank || !formData.reason) {
+        showAlert('error', 'Please fill in all required fields.');
+        return;
+    }
+    
+    // Simulate submission (in real app, this would send to server)
+    showAlert('success', 'Access request submitted successfully. You will be contacted shortly.');
+    $('#requestAccessModal').modal('hide');
+    $('#requestAccessForm')[0].reset();
+};
+
+window.showHelp = function() {
+    showAlert('info', 'For technical support, contact the system administrator at support@msu.edu');
+};
+
+window.showSystemInfo = function() {
+    const info = `
+        Mindanao State University - Sultan Naga Dimaporo ROTC Attendance System v1.0.0
+        Build: 2024.03.05
+        Status: Operational
+        Last Update: March 5, 2024
+    `;
+    showAlert('info', info);
+};
+
+window.showContact = function() {
+    const contact = `
+        System Administrator: admin@msu.edu
+        Technical Support: support@msu.edu
+        Phone: +63 XXX XXX XXXX
+        Office Hours: 08:00 - 17:00, Monday - Friday
+    `;
+    showAlert('info', contact);
+};
+
+function showAlert(type, message) {
+    $('.alert').remove();
+    const alertClass = type === 'error' ? 'alert-danger' : type === 'warning' ? 'alert-warning' : 'alert-success';
+    const alertHtml = `
+        <div class="alert ${alertClass} military-alert alert-dismissible fade show" role="alert">
+            ${message}
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    `;
+    $('.login-container').prepend(alertHtml);
+}
+</script>
+
+<style>
+.bg-military {
+    background: linear-gradient(135deg, var(--army-dark-green) 0%, var(--army-green) 100%);
+}
+
+.login-container {
+    width: 100%;
+    max-width: 450px;
+}
+
+.military-input-group {
+    background: var(--army-green);
+    color: white;
+    border: none;
+}
+
+.military-link {
+    color: var(--army-green);
+    text-decoration: none;
+    font-weight: 500;
+    transition: color 0.3s ease;
+}
+
+.military-link:hover {
+    color: var(--army-dark-green);
+    text-decoration: underline;
+}
+
+.info-panel {
+    background: linear-gradient(135deg, var(--army-dark-green) 0%, var(--army-green) 100%);
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.feature-item {
+    margin-bottom: 2rem;
+}
+
+.feature-item i {
+    margin-bottom: 1rem;
+}
+
+.feature-item h5 {
+    color: var(--army-gold);
+    margin-bottom: 0.5rem;
+}
+
+.system-status {
+    background: rgba(0, 0, 0, 0.2);
+    padding: 1.5rem;
+    border-radius: 8px;
+    border-left: 4px solid var(--army-gold);
+}
+
+.status-item {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    margin-bottom: 0.5rem;
+}
+
+.quick-links {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.quick-links a {
+    color: var(--military-gray);
+    font-size: 0.9rem;
+}
+
+@media (max-width: 991px) {
+    .info-panel {
+        display: none;
+    }
+    
+    .login-container {
+        padding: 2rem;
+    }
+}
+</style>
+{% endblock %}

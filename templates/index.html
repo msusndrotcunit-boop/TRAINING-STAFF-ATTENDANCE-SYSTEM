@@ -1,0 +1,155 @@
+{% extends 'base.html' %}
+
+{% block title %}Home - Mindanao State University - Sultan Naga Dimaporo ROTC Attendance System{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <!-- Hero Section -->
+    <div class="row mb-5">
+        <div class="col-12">
+            <div class="military-card">
+                <div class="card-body text-center py-5">
+                    <i class="fas fa-shield-alt fa-4x text-success mb-3"></i>
+                    <h2 class="military-title">Welcome to Mindanao State University - Sultan Naga Dimaporo ROTC</h2>
+                    <p class="lead">Training Staff Attendance Management System</p>
+                    <p class="text-muted">Streamlining attendance tracking with modern QR code technology</p>
+                    
+                    {% if not user.is_authenticated %}
+                        <a href="{% url 'authentication:login' %}" class="military-btn btn-lg">
+                            <i class="fas fa-sign-in-alt"></i> Login to System
+                        </a>
+                    {% else %}
+                        <a href="/dashboard/" class="military-btn btn-lg">
+                            <i class="fas fa-tachometer-alt"></i> Go to Dashboard
+                        </a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Features Section -->
+    <div class="row mb-5">
+        <div class="col-12">
+            <h3 class="text-center mb-4">System Features</h3>
+        </div>
+        
+        <div class="col-md-4 mb-4">
+            <div class="military-card h-100">
+                <div class="card-body text-center">
+                    <i class="fas fa-qrcode fa-3x text-success mb-3"></i>
+                    <h5>QR Code Attendance</h5>
+                    <p>Modern QR code scanning for quick and accurate attendance tracking</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-4 mb-4">
+            <div class="military-card h-100">
+                <div class="card-body text-center">
+                    <i class="fas fa-users fa-3x text-success mb-3"></i>
+                    <h5>Staff Management</h5>
+                    <p>Comprehensive staff profile and performance management system</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-4 mb-4">
+            <div class="military-card h-100">
+                <div class="card-body text-center">
+                    <i class="fas fa-chart-bar fa-3x text-success mb-3"></i>
+                    <h5>Analytics & Reports</h5>
+                    <p>Detailed attendance analytics and customizable reporting</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Quick Stats (for authenticated users) -->
+    {% if user.is_authenticated %}
+    <div class="row mb-5">
+        <div class="col-12">
+            <h3 class="mb-4">Quick Statistics</h3>
+        </div>
+        
+        <div class="col-md-3 mb-3">
+            <div class="military-stats">
+                <div class="stats-number" id="totalStaff">-</div>
+                <div class="stats-label">Total Staff</div>
+            </div>
+        </div>
+        
+        <div class="col-md-3 mb-3">
+            <div class="military-stats">
+                <div class="stats-number" id="todayAttendance">-</div>
+                <div class="stats-label">Today's Attendance</div>
+            </div>
+        </div>
+        
+        <div class="col-md-3 mb-3">
+            <div class="military-stats">
+                <div class="stats-number" id="activeSessions">-</div>
+                <div class="stats-label">Active Sessions</div>
+            </div>
+        </div>
+        
+        <div class="col-md-3 mb-3">
+            <div class="military-stats">
+                <div class="stats-number" id="attendanceRate">-</div>
+                <div class="stats-label">Attendance Rate</div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- About Section -->
+    <div class="row">
+        <div class="col-12">
+            <div class="military-card">
+                <div class="card-header">
+                    <h5 class="mb-0">About Mindanao State University - Sultan Naga Dimaporo ROTC</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-8">
+                            <p>The Reserve Officers' Training Corps (ROTC) at Mindanao State University - Sultan Naga Dimaporo is dedicated to developing disciplined, competent, and patriotic citizens. Our training program emphasizes leadership, military skills, and community service.</p>
+                            
+                            <h6>Core Values:</h6>
+                            <ul>
+                                <li><strong>Honor:</strong> Upholding integrity and ethical conduct</li>
+                                <li><strong>Duty:</strong> Fulfilling responsibilities with commitment</li>
+                                <li><strong>Country:</strong> Serving the nation with patriotism</li>
+                                <li><strong>Discipline:</strong> Maintaining order and self-control</li>
+                                <li><strong>Leadership:</strong> Developing effective leadership skills</li>
+                            </ul>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="text-center">
+                                <i class="fas fa-medal fa-5x text-warning mb-3"></i>
+                                <h5>Excellence in Training</h5>
+                                <p>Building tomorrow's leaders today</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+{% if user.is_authenticated %}
+<script>
+// Load quick statistics
+$(document).ready(function() {
+    // This would typically load from API endpoints
+    // For now, showing placeholder data
+    $('#totalStaff').text('45');
+    $('#todayAttendance').text('38');
+    $('#activeSessions').text('3');
+    $('#attendanceRate').text('84%');
+});
+</script>
+{% endif %}
+{% endblock %}

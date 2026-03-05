@@ -1,0 +1,144 @@
+{% extends "base.html" %}
+{% block title %}Attendance Dashboard — MSU-SND ROTC{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-4">
+  <h2 class="text-military fw-bold mb-4"><i class="fas fa-clipboard-check me-2"></i>Attendance Dashboard</h2>
+
+  <!-- Statistics Cards -->
+  <div class="row g-3 mb-4">
+    <div class="col-sm-6 col-xl-3">
+      <div class="card military-card border-0 shadow-sm h-100">
+        <div class="card-body d-flex align-items-center gap-3">
+          <div class="rounded-circle bg-primary bg-opacity-10 p-3">
+            <i class="fas fa-calendar-day fa-lg text-primary"></i>
+          </div>
+          <div>
+            <p class="text-muted small mb-0">Today's Sessions</p>
+            <h3 class="fw-bold mb-0">{{ today_sessions.count }}</h3>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-sm-6 col-xl-3">
+      <div class="card military-card border-0 shadow-sm h-100">
+        <div class="card-body d-flex align-items-center gap-3">
+          <div class="rounded-circle bg-success bg-opacity-10 p-3">
+            <i class="fas fa-user-check fa-lg text-success"></i>
+          </div>
+          <div>
+            <p class="text-muted small mb-0">Present Today</p>
+            <h3 class="fw-bold mb-0">{{ present_records }}</h3>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-sm-6 col-xl-3">
+      <div class="card military-card border-0 shadow-sm h-100">
+        <div class="card-body d-flex align-items-center gap-3">
+          <div class="rounded-circle bg-warning bg-opacity-10 p-3">
+            <i class="fas fa-users fa-lg text-warning"></i>
+          </div>
+          <div>
+            <p class="text-muted small mb-0">Total Records Today</p>
+            <h3 class="fw-bold mb-0">{{ total_records }}</h3>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-sm-6 col-xl-3">
+      <div class="card military-card border-0 shadow-sm h-100">
+        <div class="card-body d-flex align-items-center gap-3">
+          <div class="rounded-circle bg-info bg-opacity-10 p-3">
+            <i class="fas fa-percentage fa-lg text-info"></i>
+          </div>
+          <div>
+            <p class="text-muted small mb-0">Attendance Rate</p>
+            <h3 class="fw-bold mb-0">{{ attendance_rate|floatformat:1 }}%</h3>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="row g-4">
+    <!-- Today's Sessions -->
+    <div class="col-lg-6">
+      <div class="card military-card shadow-sm">
+        <div class="card-header bg-dark text-white d-flex justify-content-between align-items-center">
+          <span><i class="fas fa-calendar-day me-2"></i>Today's Training Sessions</span>
+        </div>
+        <div class="card-body p-0">
+          {% if today_sessions %}
+          <div class="list-group list-group-flush">
+            {% for session in today_sessions %}
+            <a href="{% url 'attendance:session_detail' session.id %}" class="list-group-item list-group-item-action">
+              <div class="d-flex justify-content-between align-items-start">
+                <div>
+                  <strong>{{ session.title }}</strong>
+                  <div class="small text-muted">
+                    <i class="fas fa-clock me-1"></i>{{ session.start_time|time:"g:i A" }} – {{ session.end_time|time:"g:i A" }}
+                    &nbsp;|&nbsp;<i class="fas fa-map-marker-alt me-1"></i>{{ session.location }}
+                  </div>
+                </div>
+                <span class="badge {% if session.status == 'ongoing' %}bg-success{% elif session.status == 'completed' %}bg-secondary{% elif session.status == 'cancelled' %}bg-danger{% else %}bg-primary{% endif %}">
+                  {{ session.get_status_display }}
+                </span>
+              </div>
+            </a>
+            {% endfor %}
+          </div>
+          {% else %}
+          <div class="text-center py-4 text-muted">
+            <i class="fas fa-calendar-times fa-2x mb-2 opacity-25"></i>
+            <p class="mb-0">No sessions scheduled for today.</p>
+          </div>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+
+    <!-- Recent Attendance -->
+    <div class="col-lg-6">
+      <div class="card military-card shadow-sm">
+        <div class="card-header bg-dark text-white"><i class="fas fa-history me-2"></i>Recent Attendance</div>
+        <div class="card-body p-0">
+          {% if recent_attendance %}
+          <div class="table-responsive">
+            <table class="table table-hover table-sm mb-0">
+              <thead class="table-dark">
+                <tr>
+                  <th>Staff</th>
+                  <th>Session</th>
+                  <th>Status</th>
+                  <th>Time</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for record in recent_attendance %}
+                <tr>
+                  <td>{{ record.staff.full_name }}</td>
+                  <td>{{ record.session.title }}</td>
+                  <td>
+                    <span class="badge {% if record.status == 'present' %}bg-success{% elif record.status == 'late' %}bg-warning text-dark{% elif record.status == 'absent' %}bg-danger{% else %}bg-secondary{% endif %}">
+                      {{ record.get_status_display }}
+                    </span>
+                  </td>
+                  <td>{{ record.check_in_time|time:"g:i A" }}</td>
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+          {% else %}
+          <div class="text-center py-4 text-muted">
+            <i class="fas fa-inbox fa-2x mb-2 opacity-25"></i>
+            <p class="mb-0">No recent attendance records.</p>
+          </div>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
