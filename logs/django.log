@@ -598,3 +598,20 @@ Not Found: /favicon.ico
 "GET /login/ HTTP/1.1" 200 26371
 Forbidden (Origin checking failed - http://127.0.0.1:63751 does not match any trusted origins.): /login/
 "POST /login/ HTTP/1.1" 403 2555
+"GET /login/ HTTP/1.1" 200 26368
+"GET /login/ HTTP/1.1" 200 26368
+"GET /login/ HTTP/1.1" 200 26368
+"GET /login/ HTTP/1.1" 200 26368
+"GET /login/ HTTP/1.1" 200 26368
+"GET /login/ HTTP/1.1" 200 26368
+"GET /login/ HTTP/1.1" 200 26368
+"GET /login/ HTTP/1.1" 200 26368
+"GET /login/ HTTP/1.1" 200 26368
+Forbidden (Origin checking failed - http://127.0.0.1:63751 does not match any trusted origins.): /login/
+"POST /login/ HTTP/1.1" 403 2555
+Forbidden (Origin checking failed - http://127.0.0.1:63751 does not match any trusted origins.): /login/
+"POST /login/ HTTP/1.1" 403 2555
+Forbidden (Origin checking failed - http://127.0.0.1:63751 does not match any trusted origins.): /login/
+"POST /login/ HTTP/1.1" 403 2555
+Forbidden (Origin checking failed - http://127.0.0.1:63751 does not match any trusted origins.): /login/
+"POST /login/ HTTP/1.1" 403 2555
